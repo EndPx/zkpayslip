@@ -141,12 +141,14 @@ export default function BenchPage() {
   return (
     <div className={styles.panel} style={{ maxWidth: 780, margin: "48px auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ margin: 0 }}>Batch benchmark</h2>
-        <Link href="/" style={{ color: "#8be9c2" }}>
-          ← app
+        <h2 style={{ margin: 0, fontFamily: "var(--font-display)", textTransform: "uppercase", letterSpacing: "-0.02em" }}>
+          Batch benchmark
+        </h2>
+        <Link href="/" style={{ color: "var(--accent)", fontFamily: "var(--font-mono)", fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em", textDecoration: "none" }}>
+          ← App
         </Link>
       </div>
-      <p style={{ color: "#9aa4b2", fontSize: 14 }}>
+      <p style={{ color: "var(--text-dim)", fontSize: 14, marginTop: 10 }}>
         Measures proving time, total time, payload size and fee per recipient count for the
         two payroll strategies. Target counts: 2 / 5 / 10 / 20.
       </p>
@@ -154,7 +156,7 @@ export default function BenchPage() {
       <div
         className={styles.warn}
         style={{
-          borderColor: realMode ? "#2f9e6f" : "#b8860b",
+          borderColor: realMode ? "var(--line)" : "var(--accent)",
           marginBottom: 12,
         }}
       >
@@ -174,24 +176,24 @@ export default function BenchPage() {
         style={{
           width: "100%",
           boxSizing: "border-box",
-          background: "#0d1420",
-          color: "#dce4ee",
-          border: "1px solid #223047",
-          borderRadius: 8,
+          background: "var(--bg-raised2)",
+          color: "var(--text)",
+          border: "1px solid var(--line)",
+          borderRadius: "var(--radius-btn)",
           padding: 10,
-          fontFamily: "monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 12,
           marginBottom: 12,
         }}
         placeholder='["0xabc...", "0xdef..."]'
       />
-      <div style={{ fontSize: 12, color: "#9aa4b2", marginBottom: 12 }}>
+      <div style={{ fontSize: 12, color: "var(--text-label)", marginBottom: 12, fontFamily: "var(--font-mono)" }}>
         Parsed: {parsedRecipients.length} addresses
       </div>
 
       <div style={{ display: "flex", gap: 12, marginBottom: 12, flexWrap: "wrap" }}>
         <div>
-          <label style={{ fontSize: 13, color: "#9aa4b2" }}>Strategy</label>
+          <label style={{ fontSize: 13, color: "var(--text-dim)" }}>Strategy</label>
           <div className={styles.tabs} style={{ margin: 0 }}>
             {(["sequential", "batch"] as StrategyName[]).map((s) => (
               <button
@@ -206,19 +208,20 @@ export default function BenchPage() {
         </div>
         {strategy === "batch" && (
           <div>
-            <label style={{ fontSize: 13, color: "#9aa4b2" }}>Recipients per tx</label>
+            <label style={{ fontSize: 13, color: "var(--text-dim)" }}>Recipients per tx</label>
             <input
               type="number"
               min={1}
               value={recipientsPerTx}
               onChange={(e) => setRecipientsPerTx(Math.max(1, Number(e.target.value) || 1))}
               style={{
-                background: "#0d1420",
-                color: "#dce4ee",
-                border: "1px solid #223047",
-                borderRadius: 8,
+                background: "var(--bg-raised2)",
+                color: "var(--text)",
+                border: "1px solid var(--line)",
+                borderRadius: "var(--radius-btn)",
                 padding: "8px 10px",
-                fontFamily: "monospace",
+                fontFamily: "var(--font-mono)",
+                width: 90,
               }}
             />
           </div>
@@ -236,11 +239,11 @@ export default function BenchPage() {
             Run {n}
           </button>
         ))}
-        {running && <span style={{ color: "#9aa4b2", alignSelf: "center" }}>running…</span>}
+        {running && <span style={{ color: "var(--text-dim)", alignSelf: "center" }}>running…</span>}
       </div>
 
       {error && (
-        <div className={styles.warn} style={{ borderColor: "#c0392b" }}>
+        <div className={styles.warn} style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>
           {error}
         </div>
       )}
@@ -249,7 +252,7 @@ export default function BenchPage() {
         <>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, marginTop: 8 }}>
             <thead>
-              <tr style={{ color: "#9aa4b2", textAlign: "left" }}>
+              <tr style={{ color: "var(--text-label)", textAlign: "left", fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.16em", fontSize: 10 }}>
                 <th style={th}>strategy</th>
                 <th style={th}>recipients</th>
                 <th style={th}>per-tx</th>
@@ -261,9 +264,9 @@ export default function BenchPage() {
                 <th style={th}>mode</th>
               </tr>
             </thead>
-            <tbody style={{ fontFamily: "monospace" }}>
+            <tbody style={{ fontFamily: "var(--font-mono)" }}>
               {rows.map((r, i) => (
-                <tr key={i} style={{ borderTop: "1px solid #1c2839" }}>
+                <tr key={i} style={{ borderTop: "1px solid var(--line-subtle)" }}>
                   <td style={td}>{r.strategy}</td>
                   <td style={td}>{r.recipients}</td>
                   <td style={td}>{r.perTx}</td>
@@ -274,7 +277,7 @@ export default function BenchPage() {
                   <td style={td}>
                     {r.ok}/{r.failed}
                   </td>
-                  <td style={{ ...td, color: r.mock ? "#b8860b" : "#2f9e6f" }}>
+                  <td style={{ ...td, color: r.mock ? "var(--accent)" : "var(--text)" }}>
                     {r.mock ? "MOCK" : "real"}
                   </td>
                 </tr>
