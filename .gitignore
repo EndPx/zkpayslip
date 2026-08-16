@@ -6,11 +6,45 @@ AGENTS.md
 
 # Dependencies
 node_modules/
+/.pnp
+.pnp.js
 
-# Secrets / key material — never commit
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+.yalc
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files — never commit secrets
 .env
 .env.*
 !.env.example
 
-# OS
-.DS_Store
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Lockfiles — starter kit convention (revisit before final submission)
+package-lock.json
+yarn.lock
+
+# Cairo build artifacts
+cairo/target/

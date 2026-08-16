@@ -9,6 +9,11 @@ verifier-bound proof of income — without exposing their financial history.
 > payroll"). Contract addresses, benchmark numbers, a live demo, and full
 > documentation will land here as the build progresses.
 
+## Acknowledgements
+
+Bootstrapped from the [STRK20 Starter Kit](https://github.com/Akashneelesh/strk20-starter-kit)
+(MIT, © 2023 Philippe ROSTAN — see [docs/THIRD-PARTY-NOTICES.md](./docs/THIRD-PARTY-NOTICES.md)).
+
 ## License
 
 [MIT](./LICENSE)
