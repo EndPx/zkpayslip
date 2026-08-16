@@ -92,15 +92,16 @@ Proving behaviour is network-independent, so the default run is **Sepolia**
    recipients). Fund each with a dust amount and **register every one**
    (viewing key) — registration must precede payment; this is the Step 7b
    "fund and register benchmark accounts" work.
-3. Export the recipient addresses as a JSON array (the bench script prints
-   instructions: `npm run bench -- --help`).
-4. Run: `npm run bench -- --network sepolia --strategy sequential` then
-   `npm run bench -- --network sepolia --strategy batch --recipients 2,5,10,20`.
-5. The script writes measured numbers into `docs/FINDINGS.md` automatically.
+3. Open **http://localhost:3100/bench**, paste the recipient addresses as a
+   JSON array, pick `sequential`, click **Run 2** — then Run 5 / 10 / 20.
+   Switch to `batch`, set recipients-per-tx equal to the run size, repeat
+   2 / 5 / 10 / 20 until a count starts failing.
+4. Click **Copy FINDINGS markdown** and paste the block into
+   `docs/FINDINGS.md` (or just confirm and the agent files it).
 
 **Bring back**
 
-- Nothing manual — confirm the script's output blocks landed in FINDINGS.
+- Nothing manual beyond the runs — the exported table carries the numbers.
 
 **What happens next**
 
