@@ -1,0 +1,545 @@
+/* /about — narrative landing in the STRK20 brand world. */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg-base);
+  color: var(--text);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 var(--gutter);
+  border-bottom: 1px solid var(--line-subtle);
+  position: sticky;
+  top: 0;
+  background: rgba(13, 13, 13, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  background: var(--accent);
+  color: var(--sel-text);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-btn);
+}
+
+.brandName {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.openApp {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-btn);
+  padding: 9px 18px;
+  transition: background 120ms ease-out;
+}
+
+.openApp:hover {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding: clamp(72px, 12vh, 128px) 0;
+}
+
+.section + .section {
+  border-top: 1px solid var(--line-subtle);
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tag::before {
+  content: "";
+  width: 14px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* ─── Hero ───────────────────────────────────────────────────── */
+
+.hero {
+  padding: clamp(72px, 12vh, 128px) 0 clamp(56px, 8vh, 96px);
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6.4vw, 84px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+.heroAccent {
+  color: var(--accent);
+}
+
+.heroSub {
+  font-size: clamp(16px, 1.6vw, 19px);
+  color: var(--text-dim);
+  max-width: 56ch;
+  margin-bottom: 32px;
+}
+
+.ctaRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-btn);
+  padding: 14px 26px;
+  transition: background 120ms ease-out;
+}
+
+.ctaPrimary:hover {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.ctaSecondary {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  padding: 14px 26px;
+  transition: border-color 120ms ease-out, color 120ms ease-out;
+}
+
+.ctaSecondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Hero schematic — the payslip proof token */
+.schematic {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.schematicText {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The one authored motion moment: the nullifier burns, once. */
+.burnLine {
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: burn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+}
+
+@keyframes burn {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.sealPulse {
+  animation: seal 1.6s cubic-bezier(0.16, 1, 0.3, 1) 2s 1;
+}
+
+@keyframes seal {
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ─── Section headings ───────────────────────────────────────── */
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 50px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  max-width: 22ch;
+}
+
+.lead {
+  font-size: clamp(16px, 1.5vw, 18px);
+  color: var(--text-dim);
+  max-width: 62ch;
+  margin-bottom: 40px;
+}
+
+/* ─── Paths (problem) ────────────────────────────────────────── */
+
+.paths {
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+}
+
+.path {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 18px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line-subtle);
+  align-items: baseline;
+}
+
+.pathLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-label);
+}
+
+.pathText {
+  font-size: 17px;
+  color: var(--text-dim);
+}
+
+.pathC {
+  border-top: 1px solid var(--line);
+}
+
+.pathCText {
+  font-size: 17px;
+  color: var(--text);
+}
+
+.pathCText em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+/* ─── Steps (how it works) ───────────────────────────────────── */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line-subtle);
+  border: 1px solid var(--line-subtle);
+}
+
+.step {
+  background: var(--bg-base);
+  padding: 26px 22px 30px;
+}
+
+.stepTag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.stepWord {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.stepText {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ─── Truth tables ───────────────────────────────────────────── */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.table th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--text-label);
+  text-align: left;
+  padding: 12px 18px 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.table td {
+  padding: 16px 18px 16px 0;
+  border-bottom: 1px solid var(--line-subtle);
+  vertical-align: top;
+  color: var(--text-dim);
+}
+
+.table td:first-child {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.tableOrange {
+  color: var(--accent);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+/* ─── Status ─────────────────────────────────────────────────── */
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  background: var(--line-subtle);
+  border: 1px solid var(--line-subtle);
+}
+
+.statusCell {
+  background: var(--bg-base);
+  padding: 22px;
+}
+
+.statusChip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+  margin-bottom: 12px;
+}
+
+.chipLive {
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+}
+
+.chipPending {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.statusText {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.statusText b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.statusNote {
+  margin-top: 22px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-label);
+  max-width: 60ch;
+}
+
+/* ─── FAQ ────────────────────────────────────────────────────── */
+
+.faq {
+  max-width: 760px;
+}
+
+.qa {
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.qa summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 0;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.qa summary::-webkit-details-marker {
+  display: none;
+}
+
+.qa summary::after {
+  content: "+";
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 18px;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.qa[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.answer {
+  padding: 0 0 22px;
+  color: var(--text-dim);
+  font-size: 15px;
+  max-width: 62ch;
+}
+
+/* ─── Close ──────────────────────────────────────────────────── */
+
+.close {
+  text-align: center;
+  padding: clamp(88px, 14vh, 150px) 0;
+}
+
+.closeTitle {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.closeTitle em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.footer {
+  border-top: 1px solid var(--line-subtle);
+  padding: 22px var(--gutter);
+}
+
+.footerInner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-label);
+}
+
+.footerLink {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  color: var(--accent);
+}
+
+.footerDot {
+  color: var(--text-label);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+  .steps {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .steps {
+    grid-template-columns: 1fr;
+  }
+  .path {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .table th,
+  .table td {
+    padding-right: 10px;
+  }
+}
