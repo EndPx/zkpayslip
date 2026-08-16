@@ -1,0 +1,16 @@
+# Internal build instructions — never ship to the public repo
+AGENTS.md
+
+# Local agent session state
+.zcode/
+
+# Dependencies
+node_modules/
+
+# Secrets / key material — never commit
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
