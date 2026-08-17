@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "../employer/employer.module.css";
 import { useEmployer } from "@/lib/employer/store";
+import { addChannelOnChain, explainRevert } from "@/lib/contract/writes";
+import { useStoreWallet } from "../components/Wallet/walletContext";
 
 export default function InvitePage() {
   const { addChannel, pendingChannels, mockMode } = useEmployer();
@@ -11,10 +13,15 @@ export default function InvitePage() {
   const [newLabel, setNewLabel] = useState("");
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [chainTx, setChainTx] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  // add_channel is owner-only on-chain; without a wallet the invite stays local.
+  const myWalletAccount = useStoreWallet((s) => s.myWalletAccount);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setChainTx(null);
     const addr = newAddr.trim();
     if (!/^0x[0-9a-fA-F]{8,}$/.test(addr)) {
       setError("Enter a valid Starknet address (0x…).");
@@ -25,6 +32,17 @@ export default function InvitePage() {
     setNewAddr("");
     setNewLabel("");
     setTimeout(() => setDone(false), 2500);
+
+    // Mirror the channel on-chain when a wallet can sign for it. add_channel is
+    // owner-only, so a non-employer wallet reverts — reported, not swallowed.
+    if (!myWalletAccount) return;
+    const local = useEmployer.getState().channels.at(-1);
+    if (!local) return;
+    try {
+      setChainTx(await addChannelOnChain(myWalletAccount, local.id, addr));
+    } catch (err) {
+      setError(explainRevert(err));
+    }
   }
 
   return (
@@ -115,6 +133,19 @@ export default function InvitePage() {
           {done && (
             <div className={styles.fieldHint} style={{ color: "var(--accent)", marginTop: 10 }}>
               ✓ Channel added — waiting for registration
+            </div>
+          )}
+          {chainTx && (
+            <div className={styles.fieldHint} style={{ marginTop: 10, wordBreak: "break-all" }}>
+              ✓ Written on-chain ·{" "}
+              <a
+                href={`https://sepolia.voyager.online/tx/${chainTx}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: "var(--accent)" }}
+              >
+                {chainTx.slice(0, 18)}…
+              </a>
             </div>
           )}
         </form>
