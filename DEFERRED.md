@@ -158,9 +158,19 @@ small payroll cycle (~3 STRK) + fees.
    toward the three if you prefer fewer spends).
 4. Fill `strk20.json`: `transactions` (≥3), `contracts`, `demo_video`,
    `demo_url`; set the repository **Website** field to the demo URL.
-5. Record the 3-minute demo video. Shot list (in order): the problem →
-   employer runs payroll → explorer view showing nothing → employee sees
-   their own salary → employee generates a proof → verifier validates it.
+5. Record the 3-minute demo video. Shot list (in order, ~30s each):
+   - **The problem** (narrator over /about hero + paths A/B/C: "a wallet
+     address is a financial strip-search").
+   - **Employer runs payroll** (employer dashboard: add channel, activate,
+     execute run — explorer shows nothing meaningful).
+   - **Explorer view showing nothing** (Voyager tx: sender is a relayer,
+     amounts/counterparties absent).
+   - **Employee sees their own salary** (employee portal: shielded balance,
+     reveal a pay-period row).
+   - **Employee generates a proof** (generate disclosure → copy verify
+     link).
+   - **Verifier validates it** (verify page: paste id → VALID → fact
+     revealed → redeem → second attempt = ALREADY_REDEEMED).
 
 **Bring back**
 

@@ -12,12 +12,12 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | 2 — First mainnet contact | DEFERRED | Runbook in `DEFERRED.md`; waiting on funded Ready wallet. |
 | 3 — Repository and registration | PARTIAL | Public repo + MIT license live; registry PR #71 applied (2026-08-17). `strk20.json` skeleton committed, hashes pending Step 2. Website field pending demo URL (Step 9). |
 | 4 — Batch benchmark | PARTIAL | `executePayrollRun` + strategies + bench harness built; measured numbers DEFERRED. |
-| 5 — Cairo contract | PARTIAL | Contract + tests written; sepolia deploy DEFERRED (needs funded account). |
+| 5 — Cairo contract | PARTIAL | Contract + tests written, scarb build clean; sepolia deploy DEFERRED (needs funded account + WSL for snforge). |
 | 6 — Employer surfaces | UNVERIFIED | Built against mocked wallet state. Channel add verified on /invite; cross-route persistence of in-memory zustand state is flaky on hard navigation (Next refresh) — production state will be on-chain, not in-memory. |
-| 7 — Employee portal | UNVERIFIED | Built against mocked wallet state. |
-| 8 — Disclosure and verifier | UNVERIFIED | Built against mocked wallet state + local contract tests. |
-| 9 — Mainnet deployment | DEFERRED | Naturally last; runbook in `DEFERRED.md`. |
-| 10 — Documentation | PARTIAL | README/FINDINGS finalized to the extent facts exist; benchmark numbers PENDING. |
+| 7 — Employee portal | UNVERIFIED | Built against mocked wallet state. Simulate-payment → reveal → generate-proof flow verified in browser. |
+| 8 — Disclosure and verifier | UNVERIFIED | Mock generate→check→redeem→second-attempt-revert flow verified end-to-end in browser; contract ready but not deployed. |
+| 9 — Mainnet deployment | DEFERRED | Naturally last; runbook + demo video shot list in `DEFERRED.md`. |
+| 10 — Documentation | DONE | README per spec, FINDINGS finalized to extent facts exist, PROGRESS current. Benchmark numbers PENDING. |
 
 ## Verification ledger
 
