@@ -59,6 +59,47 @@ measured ourselves are marked PENDING, never guessed.
   (`"OPEN"`, `"${poolAddress}"`, `"${openNoteIds[N]}"`) are literal strings
   resolved by the wallet — never hex-normalize them.
 
+## Deployed-contract verification (2026-08-17)
+
+`scripts/verify-sepolia.mjs` exercises the deployed contract from the terminal,
+so the README's claims rest on the deployed bytecode rather than on snforge's
+local VM. **8/8 checks passed** against
+`0x051c29216ddd5e9016fad4380db34e895dc8176f58ec4754cb3b4c4f14bda8b3`.
+
+| Check | Result | Tx |
+| --- | --- | --- |
+| `add_channel` → state 0 (pending) | PASS | `0x58468fc90fc7deb58f848545afb7a6dbd6d81a05a4ebab1f55c70e5044a572e` |
+| `activate_channel` → state 1 (active) | PASS | `0x35767130ec6b33e12e2be5150031de19502e215c4b4ae75b0d3267b1b37b83a` |
+| duplicate `add_channel` reverts (`EXISTS`) | PASS | — (reverted) |
+| unknown disclosure reads `NF` | PASS | — (read-only) |
+| `create_disclosure` → `VALID` | PASS | `0x92bf077f0ccdaf0f80870ae47b170c3f8e59e7a1896c0a725d3ca6c60f8853` |
+| `redeem_disclosure` → `REDM` | PASS | `0x5c142a0d7e033adc007dffb1969fc29776a1c683d5a3daca2bd17d976833357` |
+| second redemption reverts (`REDEEMED`) | PASS | — (reverted) |
+| burned nullifier rejected on a fresh id (`BURNED`) | PASS | — (reverted) |
+
+These are **Sepolia** hashes. They do not count toward the three mainnet
+pool-touching transactions the submission gate requires.
+
+## Tooling gotchas worth publishing (2026-08-17)
+
+Three cost us time; all three are cheap for another team to avoid.
+
+- **`block_id: "pending"` is gone.** Nodes on JSON-RPC spec 0.10.x reject it
+  with `unknown block tag 'pending'`; the tag was renamed **`pre_confirmed`**.
+  Verified against `starknet-sepolia-rpc.publicnode.com` (spec 0.10.2), where
+  `pre_confirmed`, `latest`, and `l1_accepted` all answer and `pending` alone
+  fails. This is nastier than a plain error, because code that catches the
+  failure and falls back to a mock looks like it is working.
+- **Blast API is decommissioned.** `starknet-*.public.blastapi.io` now answers
+  every request with `"Blast API is no longer available… use Alchemy"`, and
+  `blastapi.org` does not resolve at all. The starter kit still ships a Blast
+  URL at provider index 1 in `src/utils/constants.ts`.
+- **starknet.js 10.x changed the `Account` constructor** to a single options
+  object: `new Account({ provider, address, signer })`. The old positional form
+  `new Account(provider, address, pk)` does not throw a helpful error — it
+  reads argument one as the options bag and dies on `address.toLowerCase()`
+  of `undefined`.
+
 ## Batch benchmark (PENDING Step 4 execution)
 
 Method: `executePayrollRun` (src/lib/payroll) with swappable strategies;

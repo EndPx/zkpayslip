@@ -15,7 +15,7 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | 5 — Cairo contract | **DONE** | Contract written (284 lines), scarb build clean, snforge test 2/2 PASS via WSL, **deployed to Sepolia** (2026-08-17): address `0x051c29216ddd5e9016fad4380db34e895dc8176f58ec4754cb3b4c4f14bda8b3`, class `0x0189e68090e90293e589b03b6dfb18552da6ad381eeae104d562548e060b8582`. Verified callable. |
 | 6 — Employer surfaces | UNVERIFIED | Built against mocked wallet state. Channel add verified on /invite; cross-route persistence of in-memory zustand state is flaky on hard navigation (Next refresh) — production state will be on-chain, not in-memory. |
 | 7 — Employee portal | UNVERIFIED | Built against mocked wallet state. Simulate-payment → reveal → generate-proof flow verified in browser. |
-| 8 — Disclosure and verifier | UNVERIFIED | Mock generate→check→redeem→second-attempt-revert flow verified end-to-end in browser; contract ready but not deployed. |
+| 8 — Disclosure and verifier | **DONE** | Exit condition met **on-chain**: `scripts/verify-sepolia.mjs` runs generate→check→redeem→second-attempt-revert against the deployed Sepolia contract, 8/8 PASS (2026-08-17). Second redemption reverts; a burned nullifier cannot be reused. Verifier page reads `check_disclosure` over read-only RPC. The *browser write path* (employee generates, verifier redeems, each signing with a wallet) is still mocked — see the ledger below. |
 | 9 — Mainnet deployment | DEFERRED | Naturally last; runbook + demo video shot list in `DEFERRED.md`. |
 | 10 — Documentation | DONE | README per spec, FINDINGS finalized to extent facts exist, PROGRESS current. Benchmark numbers PENDING. |
 
@@ -27,7 +27,10 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | Any `strk20*` wallet call | — | UNVERIFIED until Step 1 connect |
 | Employer dashboard flows | mock wallet only | UNVERIFIED |
 | Employee portal flows | mock wallet only | UNVERIFIED |
-| Disclosure generate/redeem | snforge tests + mock UI | UNVERIFIED on-chain |
+| Disclosure lifecycle, contract level | `scripts/verify-sepolia.mjs`, 8/8 PASS against deployed Sepolia contract | **VERIFIED on-chain 2026-08-17** |
+| Channel lifecycle, contract level | same run — add → pending, activate → active, duplicate add reverts | **VERIFIED on-chain 2026-08-17** |
+| Verifier page read path | reads `check_disclosure` via read-only RPC, no wallet | VERIFIED (falls back to mock only when the node is unreachable, and says so) |
+| Disclosure/redeem *from the browser* | mock UI only — no wallet has signed one | UNVERIFIED |
 | Batch benchmark numbers | — | PENDING Step 4 execution |
 
 ## Environment notes
