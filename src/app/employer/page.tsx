@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./employer.module.css";
 import { useEmployer } from "@/lib/employer/store";
+import { executePayrollRun, createMockDeps } from "@/lib/payroll";
+import { addrSTRK } from "@/utils/constants";
 import SelectWallet from "../components/client/WalletHandle/SelectWallet";
 
 function shortAddr(a: string): string {
@@ -30,6 +32,9 @@ export default function EmployerPage() {
     activateChannel,
     terminateChannel,
     runs,
+    startRun,
+    finishRun,
+    failRun,
     activeChannels,
     pendingChannels,
   } = useEmployer();
@@ -37,6 +42,8 @@ export default function EmployerPage() {
   const [newAddr, setNewAddr] = useState("");
   const [newLabel, setNewLabel] = useState("");
   const [addrError, setAddrError] = useState<string | null>(null);
+  const [running, setRunning] = useState(false);
+  const [runNote, setRunNote] = useState<string | null>(null);
 
   const treasuryStrk = (Number(treasuryBalance) / 1e18).toFixed(2);
   const active = activeChannels();
@@ -53,6 +60,55 @@ export default function EmployerPage() {
     addChannel(addr, newLabel.trim() || undefined);
     setNewAddr("");
     setNewLabel("");
+  }
+
+  /**
+   * Execute a payroll cycle over every active channel.
+   *
+   * This calls the real executePayrollRun — the same function a wallet-backed
+   * run uses — and only the transport is swapped. With no wallet connected it
+   * runs on mock deps, whose hashes are all prefixed MOCK_ so a mocked run can
+   * never be mistaken for a chain transaction. Connecting a wallet swaps in
+   * createWalletDeps and nothing else about this path changes.
+   */
+  async function handleExecuteRun() {
+    if (running || active.length === 0) return;
+    setRunning(true);
+    setRunNote(null);
+
+    // Cycle identity is the calendar month, not the execution date.
+    const now = new Date();
+    const cycle = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+
+    // Amounts stay in the smallest unit and are never logged or persisted.
+    const entries = active.map((c) => ({ channelId: c.id, amount: 10n ** 18n }));
+    const recipients = Object.fromEntries(active.map((c) => [c.id, c.recipientAddress]));
+
+    const runId = startRun(cycle, entries);
+    try {
+      const result = await executePayrollRun({
+        strategy: "sequential",
+        deps: createMockDeps(),
+        token: addrSTRK,
+        entries,
+        recipients,
+      });
+      if (result.hasFailures) {
+        failRun(runId);
+        const failed = result.results.filter((r) => !r.ok).length;
+        setRunNote(`${failed} of ${result.results.length} recipients failed — run marked failed.`);
+      } else {
+        finishRun(runId, result.txHashes);
+        setRunNote(
+          `${result.results.length} recipients paid in ${result.txHashes.length} tx · ${result.totalMs} ms · MOCK transport (no wallet connected).`
+        );
+      }
+    } catch {
+      failRun(runId);
+      setRunNote("Run failed before submission.");
+    } finally {
+      setRunning(false);
+    }
   }
 
   return (
@@ -162,17 +218,23 @@ export default function EmployerPage() {
           <h2 className={styles.sectionTitle}>Run history</h2>
           <button
             className={styles.sectionAction}
-            disabled={active.length === 0}
+            disabled={active.length === 0 || running}
             style={{
-              opacity: active.length === 0 ? 0.4 : 1,
-              cursor: active.length === 0 ? "not-allowed" : "pointer",
+              opacity: active.length === 0 || running ? 0.4 : 1,
+              cursor: active.length === 0 || running ? "not-allowed" : "pointer",
               background: "transparent",
             }}
-            onClick={() => alert("Run execution wired against the sepolia contract in Step 6 exit — mock writes a MOCK_ hash.")}
+            onClick={handleExecuteRun}
           >
-            ▶ Execute run
+            {running ? "Running…" : "▶ Execute run"}
           </button>
         </div>
+
+        {runNote && (
+          <div className={styles.mockBanner} style={{ marginBottom: 12 }}>
+            {runNote}
+          </div>
+        )}
 
         {runs.length === 0 ? (
           <div className={styles.empty}>
