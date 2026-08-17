@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEmployee } from "@/lib/employee/store";
+import { checkDisclosureOnChain, getDisclosureOnChain } from "@/lib/contract/sepolia";
 import type { DisclosureToken } from "../../../types/payroll";
 import styles from "../employee/employee.module.css";
 
@@ -27,6 +28,8 @@ function verdictLabel(v: string): string {
       return "Already redeemed — the nullifier is burned";
     case "WRONG_VERIFIER":
       return "Wrong verifier — this proof was issued to someone else";
+    case "UNREACHABLE":
+      return "Could not check — the node did not answer";
     case "NOT_FOUND":
     default:
       return "Not found — no such proof on-chain";
@@ -79,34 +82,81 @@ function VerifyInner() {
   const [revealedFact, setRevealedFact] = useState<DisclosureToken | null>(null);
   const [redeemedId, setRedeemedId] = useState<string | null>(null);
 
+  const [checking, setChecking] = useState(false);
+  const [source, setSource] = useState<"chain" | "mock" | null>(null);
+  /** True when the node failed to answer — keeps the footer note honest. */
+  const [chainDown, setChainDown] = useState(false);
+
   // Mock lookup: the employee store holds the token. A real verifier reads
   // from the chain (read-only call to check_disclosure), not the store.
   const { disclosures } = useEmployee();
 
-  function check() {
+  async function check() {
     setVerdict(null);
     setRevealedFact(null);
+    setSource(null);
     const id = inputId.trim();
     if (!id) {
       setVerdict("NOT_FOUND");
       return;
     }
+    setChecking(true);
+    setChainDown(false);
+
+    // The chain is the authority. Ask it first — read-only, no wallet needed.
+    const chainVerdict = await checkDisclosureOnChain(id);
+
+    // A definite answer about a real on-chain disclosure ends the check here.
+    // "NOT_FOUND" is not definite enough to stop: the demo's proofs live in
+    // the in-memory store, so we still look there before reporting nothing.
+    if (chainVerdict === "VALID" || chainVerdict === "EXPIRED" || chainVerdict === "ALREADY_REDEEMED") {
+      setVerdict(chainVerdict);
+      setSource("chain");
+      if (chainVerdict === "VALID") {
+        const detail = await getDisclosureOnChain(id);
+        if (detail) {
+          setRevealedFact({
+            id,
+            fact: { kind: "threshold_met", threshold: 0n, from: 0, to: 0 },
+            verifierAddress: detail.verifier,
+            expiresAt: detail.expiresAt,
+            nullifier: detail.nullifier,
+          });
+        }
+      }
+      setChecking(false);
+      return;
+    }
+
+    // Remember whether the chain actually answered. If it did not, we must not
+    // let a mock miss masquerade as "no such proof on-chain".
+    if (chainVerdict === "UNREACHABLE") setChainDown(true);
+
+    // Fallback to mock (in-memory employee store).
     const d = disclosures.find((x) => x.id === id);
     if (!d) {
-      setVerdict("NOT_FOUND");
+      setVerdict(chainVerdict === "UNREACHABLE" ? "UNREACHABLE" : "NOT_FOUND");
+      setSource(chainVerdict === "UNREACHABLE" ? null : "chain");
+      setChecking(false);
       return;
     }
     if (redeemedId === d.id) {
       setVerdict("ALREADY_REDEEMED");
+      setSource("mock");
+      setChecking(false);
       return;
     }
     // Mock: check expiry
     if (d.expiresAt && Math.floor(Date.now() / 1000) >= d.expiresAt) {
       setVerdict("EXPIRED");
+      setSource("mock");
+      setChecking(false);
       return;
     }
     setVerdict("VALID");
     setRevealedFact(d);
+    setSource("mock");
+    setChecking(false);
   }
 
   function redeem() {
@@ -161,8 +211,9 @@ function VerifyInner() {
           <button
             className={styles.unshieldBtn}
             onClick={check}
+            disabled={checking}
           >
-            Check proof
+            {checking ? "Checking…" : "Check proof"}
           </button>
         </div>
 
@@ -211,6 +262,23 @@ function VerifyInner() {
               >
                 {verdictLabel(verdict)}
               </span>
+              {source && (
+                <span
+                  style={{
+                    marginLeft: "auto",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 10,
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: source === "chain" ? "var(--accent)" : "var(--text-faint)",
+                    border: `1px solid ${source === "chain" ? "var(--accent)" : "var(--line)"}`,
+                    borderRadius: "var(--radius-pill)",
+                    padding: "3px 10px",
+                  }}
+                >
+                  {source === "chain" ? "Sepolia" : "Mock"}
+                </span>
+              )}
             </div>
 
             {/* If valid, reveal the fact */}
@@ -286,10 +354,15 @@ function VerifyInner() {
           </div>
         )}
 
-        {/* Mock note */}
-        <div className={styles.mockBanner} style={{ marginTop: 36 }}>
-          MOCK — lookup is in-memory. A real verifier reads check_disclosure
-          from the Cairo contract via a read-only RPC call (no wallet).
+        {/* Source note */}
+        <div className={styles.mockBanner} style={{ marginTop: 36, borderColor: "var(--line)", color: "var(--text-dim)" }}>
+          {chainDown
+            ? "NODE UNREACHABLE — the Sepolia node did not answer, so nothing here has been checked against the chain. This is not a verdict."
+            : source === "chain"
+              ? "ON-CHAIN — verdict read from check_disclosure on the zkPayslip contract at Sepolia via read-only RPC (no wallet)."
+              : source === "mock"
+                ? "MOCK — this proof exists only in this browser's in-memory store, not on-chain. A real verifier reads check_disclosure from the Cairo contract."
+                : "Paste a proof id to check it against the zkPayslip contract on Sepolia. No wallet required."}
         </div>
       </main>
     </div>
