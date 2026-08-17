@@ -13,8 +13,8 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | 3 — Repository and registration | PARTIAL | Public repo + MIT license live; registry PR #71 applied (2026-08-17). `strk20.json` skeleton committed, hashes pending Step 2. Website field pending demo URL (Step 9). |
 | 4 — Batch benchmark | PARTIAL | `executePayrollRun` + strategies + bench harness built; measured numbers DEFERRED. |
 | 5 — Cairo contract | **DONE** | Contract written (284 lines), scarb build clean, snforge test 2/2 PASS via WSL, **deployed to Sepolia** (2026-08-17): address `0x051c29216ddd5e9016fad4380db34e895dc8176f58ec4754cb3b4c4f14bda8b3`, class `0x0189e68090e90293e589b03b6dfb18552da6ad381eeae104d562548e060b8582`. Verified callable. |
-| 6 — Employer surfaces | UNVERIFIED | Built against mocked wallet state. Channel add verified on /invite; cross-route persistence of in-memory zustand state is flaky on hard navigation (Next refresh) — production state will be on-chain, not in-memory. |
-| 7 — Employee portal | UNVERIFIED | Built against mocked wallet state. Simulate-payment → reveal → generate-proof flow verified in browser. |
+| 6 — Employer surfaces | PARTIAL | `Execute run` now calls the real `executePayrollRun` (mock transport until a wallet connects). Channel add/activate/terminate each send their signed contract call when a wallet is present, with owner-only reverts surfaced, not swallowed. **No browser wallet has signed one yet** — the same entrypoints are proven working by `scripts/verify-sepolia.mjs`. Cross-route persistence of in-memory zustand state stays flaky on hard navigation; production state is on-chain, not in-memory. |
+| 7 — Employee portal | PARTIAL | Proof generation binds to a real verifier address and sends a signed `create_disclosure`; the fact travels as a commitment, never in the clear. Balance, history, and unshield remain mocked. **Untested with a browser wallet.** |
 | 8 — Disclosure and verifier | **DONE** | Exit condition met **on-chain**: `scripts/verify-sepolia.mjs` runs generate→check→redeem→second-attempt-revert against the deployed Sepolia contract, 8/8 PASS (2026-08-17). Second redemption reverts; a burned nullifier cannot be reused. Verifier page reads `check_disclosure` over read-only RPC. The *browser write path* (employee generates, verifier redeems, each signing with a wallet) is still mocked — see the ledger below. |
 | 9 — Mainnet deployment | DEFERRED | Naturally last; runbook + demo video shot list in `DEFERRED.md`. |
 | 10 — Documentation | DONE | README per spec, FINDINGS finalized to extent facts exist, PROGRESS current. Benchmark numbers PENDING. |
@@ -30,7 +30,9 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | Disclosure lifecycle, contract level | `scripts/verify-sepolia.mjs`, 8/8 PASS against deployed Sepolia contract | **VERIFIED on-chain 2026-08-17** |
 | Channel lifecycle, contract level | same run — add → pending, activate → active, duplicate add reverts | **VERIFIED on-chain 2026-08-17** |
 | Verifier page read path | reads `check_disclosure` via read-only RPC, no wallet | VERIFIED (falls back to mock only when the node is unreachable, and says so) |
-| Disclosure/redeem *from the browser* | mock UI only — no wallet has signed one | UNVERIFIED |
+| Disclosure/redeem *from the browser* | write path built (`src/lib/contract/writes.ts`); typecheck + production build clean; no browser wallet has signed one | UNVERIFIED — needs Step 1 wallet connect |
+| Channel writes *from the browser* | same module; owner-only reverts mapped to readable errors | UNVERIFIED — needs Step 1 wallet connect |
+| Dead RPC endpoint | Blast API decommissioned on both TLDs; replaced with publicnode | FIXED 2026-08-17 |
 | Batch benchmark numbers | — | PENDING Step 4 execution |
 
 ## Environment notes
