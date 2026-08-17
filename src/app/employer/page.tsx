@@ -5,6 +5,13 @@ import Link from "next/link";
 import styles from "./employer.module.css";
 import { useEmployer } from "@/lib/employer/store";
 import { executePayrollRun, createMockDeps } from "@/lib/payroll";
+import {
+  addChannelOnChain,
+  activateChannelOnChain,
+  terminateChannelOnChain,
+  explainRevert,
+} from "@/lib/contract/writes";
+import { useStoreWallet } from "../components/Wallet/walletContext";
 import { addrSTRK } from "@/utils/constants";
 import SelectWallet from "../components/client/WalletHandle/SelectWallet";
 
@@ -44,6 +51,11 @@ export default function EmployerPage() {
   const [addrError, setAddrError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [runNote, setRunNote] = useState<string | null>(null);
+  const [chainErr, setChainErr] = useState<string | null>(null);
+  const [chainTx, setChainTx] = useState<string | null>(null);
+
+  // Channel writes are owner-only on-chain; without a wallet they stay local.
+  const myWalletAccount = useStoreWallet((s) => s.myWalletAccount);
 
   const treasuryStrk = (Number(treasuryBalance) / 1e18).toFixed(2);
   const active = activeChannels();
@@ -60,6 +72,41 @@ export default function EmployerPage() {
     addChannel(addr, newLabel.trim() || undefined);
     setNewAddr("");
     setNewLabel("");
+
+    // Mirror the channel on-chain when a wallet can sign for it. The contract
+    // enforces owner-only, so a non-employer wallet reverts with NOT_OWNER —
+    // reported, not swallowed. The local channel stands either way; the store
+    // is the UI's state, the contract is the record.
+    if (myWalletAccount) {
+      const local = useEmployer.getState().channels.at(-1);
+      if (local) void writeChannel(() => addChannelOnChain(myWalletAccount, local.id, addr));
+    }
+  }
+
+  /**
+   * Run one channel write and surface its outcome.
+   *
+   * Every channel action is owner-only on-chain, so failure here is ordinary
+   * and must be legible rather than silent.
+   */
+  async function writeChannel(action: () => Promise<string>) {
+    setChainErr(null);
+    setChainTx(null);
+    try {
+      setChainTx(await action());
+    } catch (err) {
+      setChainErr(explainRevert(err));
+    }
+  }
+
+  function handleActivate(id: string) {
+    activateChannel(id);
+    if (myWalletAccount) void writeChannel(() => activateChannelOnChain(myWalletAccount, id));
+  }
+
+  function handleTerminate(id: string) {
+    terminateChannel(id);
+    if (myWalletAccount) void writeChannel(() => terminateChannelOnChain(myWalletAccount, id));
   }
 
   /**
@@ -194,7 +241,7 @@ export default function EmployerPage() {
                   {c.state === "pending_registration" && (
                     <button
                       className={styles.miniBtn}
-                      onClick={() => activateChannel(c.id)}
+                      onClick={() => handleActivate(c.id)}
                     >
                       Activate
                     </button>
@@ -202,7 +249,7 @@ export default function EmployerPage() {
                   {c.state === "active" && (
                     <button
                       className={styles.miniBtn}
-                      onClick={() => terminateChannel(c.id)}
+                      onClick={() => handleTerminate(c.id)}
                     >
                       Terminate
                     </button>
@@ -233,6 +280,26 @@ export default function EmployerPage() {
         {runNote && (
           <div className={styles.mockBanner} style={{ marginBottom: 12 }}>
             {runNote}
+          </div>
+        )}
+
+        {chainErr && (
+          <div className={styles.mockBanner} style={{ marginBottom: 12, color: "var(--accent)" }}>
+            ON-CHAIN WRITE REJECTED — {chainErr} The channel still stands locally.
+          </div>
+        )}
+
+        {chainTx && (
+          <div className={styles.mockBanner} style={{ marginBottom: 12, wordBreak: "break-all" }}>
+            ✓ Channel written on-chain ·{" "}
+            <a
+              href={`https://sepolia.voyager.online/tx/${chainTx}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "var(--accent)" }}
+            >
+              {chainTx.slice(0, 18)}…
+            </a>
           </div>
         )}
 
