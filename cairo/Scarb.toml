@@ -7,5 +7,9 @@ edition = "2024_07"
 starknet = "2.18.0"
 
 [[target.starknet-contract]]
+name = "zkpayslip"
 sierra = true
 casm = true
+
+[dev-dependencies]
+snforge_std = "0.63.0"

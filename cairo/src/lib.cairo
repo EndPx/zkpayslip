@@ -13,17 +13,40 @@ pub struct OpenNoteDeposit {
     pub amount: u128,
 }
 
-#[derive(Serde, Copy, Drop, PartialEq, Debug, starknet::Store)]
+// Channel state stored as a felt to avoid enum Store serialization quirks.
+// 0 = pending_registration, 1 = active, 2 = terminated.
+pub const STATE_PENDING: felt252 = 0;
+pub const STATE_ACTIVE: felt252 = 1;
+pub const STATE_TERMINATED: felt252 = 2;
+
+// Public enum for ABI return types — not stored directly.
+#[derive(Serde, Copy, Drop, PartialEq, Debug)]
 pub enum ChannelState {
     PendingRegistration,
     Active,
     Terminated,
 }
 
+fn state_to_felt(s: ChannelState) -> felt252 {
+    match s {
+        ChannelState::PendingRegistration => 0,
+        ChannelState::Active => 1,
+        ChannelState::Terminated => 2,
+    }
+}
+
+fn felt_to_state(f: felt252) -> ChannelState {
+    match f {
+        0 => ChannelState::PendingRegistration,
+        1 => ChannelState::Active,
+        _ => ChannelState::Terminated,
+    }
+}
+
 #[derive(Serde, Copy, Drop, PartialEq, Debug, starknet::Store)]
 pub struct Channel {
     pub recipient: ContractAddress,
-    pub state: ChannelState,
+    pub state: felt252, // stored as felt, not enum
     pub created_at: u64,
 }
 
@@ -75,7 +98,14 @@ mod ZkPayslip {
     };
     use starknet::storage::Map;
     use starknet::{ContractAddress, get_caller_address, get_contract_address, get_block_timestamp};
-    use super::{OpenNoteDeposit, ChannelState, Channel, VestingCommitment, Disclosure};
+    use super::{OpenNoteDeposit, ChannelState, Channel, VestingCommitment, Disclosure,
+        STATE_PENDING, STATE_ACTIVE, STATE_TERMINATED};
+
+    // Zero address check — compares the felt representation to 0.
+    fn is_zero_addr(a: ContractAddress) -> bool {
+        let f: felt252 = a.into();
+        f == 0
+    }
 
     #[starknet::interface]
     trait IErc20<T> {
@@ -168,7 +198,7 @@ mod ZkPayslip {
         ) -> Span<OpenNoteDeposit> {
             assert(pool_address == get_caller_address(), E_BAD_POOL);
             let ch = self.channels.read(channel_id);
-            assert(ch.state == ChannelState::Active, E_NOT_ACTIVE);
+            assert(ch.state == STATE_ACTIVE, E_NOT_ACTIVE);
             self.commitments.write(commitment_key, commitment_hash);
 
             // Echo: approve the pool to pull its tokens back into the open note.
@@ -184,10 +214,11 @@ mod ZkPayslip {
 
         fn add_channel(ref self: ContractState, channel_id: felt252, recipient: ContractAddress) {
             self.only_owner();
-            assert(self.channels.read(channel_id).created_at == 0, E_EXISTS);
+            // Existence check: a channel exists if its recipient is non-zero.
+            assert(is_zero_addr(self.channels.read(channel_id).recipient), E_EXISTS);
             self.channels.write(channel_id, Channel {
                 recipient,
-                state: ChannelState::PendingRegistration,
+                state: STATE_PENDING,
                 created_at: get_block_timestamp(),
             });
             self.emit(ChannelAdded { channel_id, recipient });
@@ -196,9 +227,9 @@ mod ZkPayslip {
         fn activate_channel(ref self: ContractState, channel_id: felt252) {
             self.only_owner();
             let mut ch = self.channels.read(channel_id);
-            assert(ch.created_at != 0, E_NO_CHANNEL);
-            assert(ch.state == ChannelState::PendingRegistration, E_NOT_PENDING);
-            ch.state = ChannelState::Active;
+            assert(!is_zero_addr(ch.recipient), E_NO_CHANNEL);
+            assert(ch.state == STATE_PENDING, E_NOT_PENDING);
+            ch.state = STATE_ACTIVE;
             self.channels.write(channel_id, ch);
             self.emit(ChannelActivated { channel_id });
         }
@@ -206,16 +237,16 @@ mod ZkPayslip {
         fn terminate_channel(ref self: ContractState, channel_id: felt252) {
             self.only_owner();
             let mut ch = self.channels.read(channel_id);
-            assert(ch.created_at != 0, E_NO_CHANNEL);
-            assert(ch.state != ChannelState::Terminated, E_TERMINATED);
-            ch.state = ChannelState::Terminated;
+            assert(!is_zero_addr(ch.recipient), E_NO_CHANNEL);
+            assert(ch.state != STATE_TERMINATED, E_TERMINATED);
+            ch.state = STATE_TERMINATED;
             self.channels.write(channel_id, ch);
             self.emit(ChannelTerminated { channel_id });
         }
 
         fn set_vesting(ref self: ContractState, channel_id: felt252, cliff_at: u64, schedule_hash: felt252) {
             self.only_owner();
-            assert(self.channels.read(channel_id).created_at != 0, E_NO_CHANNEL);
+            assert(!is_zero_addr(self.channels.read(channel_id).recipient), E_NO_CHANNEL);
             self.vesting.write(channel_id, VestingCommitment { cliff_at, schedule_hash, claimed: false });
         }
 
