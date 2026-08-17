@@ -13,7 +13,7 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | 3 — Repository and registration | PARTIAL | Public repo + MIT license live; registry PR #71 applied (2026-08-17). `strk20.json` skeleton committed, hashes pending Step 2. Website field pending demo URL (Step 9). |
 | 4 — Batch benchmark | PARTIAL | `executePayrollRun` + strategies + bench harness built; measured numbers DEFERRED. |
 | 5 — Cairo contract | PARTIAL | Contract + tests written; sepolia deploy DEFERRED (needs funded account). |
-| 6 — Employer surfaces | UNVERIFIED | Built against mocked wallet state. |
+| 6 — Employer surfaces | UNVERIFIED | Built against mocked wallet state. Channel add verified on /invite; cross-route persistence of in-memory zustand state is flaky on hard navigation (Next refresh) — production state will be on-chain, not in-memory. |
 | 7 — Employee portal | UNVERIFIED | Built against mocked wallet state. |
 | 8 — Disclosure and verifier | UNVERIFIED | Built against mocked wallet state + local contract tests. |
 | 9 — Mainnet deployment | DEFERRED | Naturally last; runbook in `DEFERRED.md`. |
