@@ -4,6 +4,8 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEmployee } from "@/lib/employee/store";
 import { checkDisclosureOnChain, getDisclosureOnChain } from "@/lib/contract/sepolia";
+import { redeemDisclosureOnChain, explainRevert } from "@/lib/contract/writes";
+import { useStoreWallet } from "../components/Wallet/walletContext";
 import type { DisclosureToken } from "../../../types/payroll";
 import styles from "../employee/employee.module.css";
 
@@ -86,6 +88,12 @@ function VerifyInner() {
   const [source, setSource] = useState<"chain" | "mock" | null>(null);
   /** True when the node failed to answer — keeps the footer note honest. */
   const [chainDown, setChainDown] = useState(false);
+  const [redeeming, setRedeeming] = useState(false);
+  const [redeemErr, setRedeemErr] = useState<string | null>(null);
+  const [redeemTx, setRedeemTx] = useState<string | null>(null);
+
+  // Checking a proof needs no wallet. Redeeming one does — it burns a nullifier.
+  const myWalletAccount = useStoreWallet((s) => s.myWalletAccount);
 
   // Mock lookup: the employee store holds the token. A real verifier reads
   // from the chain (read-only call to check_disclosure), not the store.
@@ -159,12 +167,46 @@ function VerifyInner() {
     setChecking(false);
   }
 
-  function redeem() {
-    if (revealedFact) {
-      setRedeemedId(revealedFact.id);
+  /**
+   * Burn the nullifier.
+   *
+   * When the verdict came from the chain, this is a real signed transaction:
+   * the contract checks that the caller is the bound verifier, that the window
+   * is open, and that it has not already been spent, then burns the nullifier
+   * so a second attempt reverts. Redeeming therefore needs a wallet, even
+   * though *checking* deliberately does not.
+   *
+   * A mock verdict stays local — there is nothing on-chain to burn.
+   */
+  async function redeem() {
+    setRedeemErr(null);
+
+    if (source !== "chain") {
+      if (revealedFact) setRedeemedId(revealedFact.id);
+      setVerdict("ALREADY_REDEEMED");
+      setRevealedFact(null);
+      return;
     }
-    setVerdict("ALREADY_REDEEMED");
-    setRevealedFact(null);
+
+    if (!myWalletAccount) {
+      setRedeemErr(
+        "Connect the verifier wallet to redeem. Checking a proof needs no wallet; burning its nullifier is a signed transaction."
+      );
+      return;
+    }
+
+    setRedeeming(true);
+    try {
+      const txHash = await redeemDisclosureOnChain(myWalletAccount, inputId.trim());
+      setRedeemTx(txHash);
+      // Re-read rather than assume: the chain is the authority on the outcome.
+      setVerdict(await checkDisclosureOnChain(inputId.trim()));
+      setRevealedFact(null);
+    } catch (err) {
+      setRedeemErr(explainRevert(err));
+    } finally {
+      setRedeeming(false);
+    }
   }
 
   return (
@@ -332,10 +374,24 @@ function VerifyInner() {
                 <button
                   className={styles.unshieldBtn}
                   onClick={redeem}
+                  disabled={redeeming}
                   style={{ marginTop: 20 }}
                 >
-                  Redeem (burn nullifier)
+                  {redeeming ? "Burning…" : "Redeem (burn nullifier)"}
                 </button>
+                {redeemErr && (
+                  <p
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 11,
+                      color: "var(--accent)",
+                      marginTop: 10,
+                      maxWidth: "58ch",
+                    }}
+                  >
+                    {redeemErr}
+                  </p>
+                )}
                 <p
                   style={{
                     fontFamily: "var(--font-mono)",
@@ -364,6 +420,28 @@ function VerifyInner() {
                 ? "MOCK — this proof exists only in this browser's in-memory store, not on-chain. A real verifier reads check_disclosure from the Cairo contract."
                 : "Paste a proof id to check it against the zkPayslip contract on Sepolia. No wallet required."}
         </div>
+
+        {redeemTx && (
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              color: "var(--text-faint)",
+              marginTop: 12,
+              wordBreak: "break-all",
+            }}
+          >
+            NULLIFIER BURNED ON-CHAIN ·{" "}
+            <a
+              href={`https://sepolia.voyager.online/tx/${redeemTx}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "var(--accent)" }}
+            >
+              {redeemTx.slice(0, 18)}…
+            </a>
+          </div>
+        )}
       </main>
     </div>
   );
