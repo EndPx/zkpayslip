@@ -111,6 +111,36 @@ Proving behaviour is network-independent, so the default run is **Sepolia**
 
 ---
 
+### Step 5 — snforge tests (blocker), sepolia deploy, class declaration
+
+Starknet Foundry has no Windows build as of v0.63.0 — `scarb build` passes
+but `snforge test` is blocked on this OS. Two options, both yours to run:
+
+1. Install snforge inside **WSL** (`curl -L https://raw.githubusercontent.com/foundry-rs/starknet-foundry/master/scripts/install.sh | bash`), then `cd cairo && snforge test`.
+2. Or run the contract as-is and discover errors on-chain instead of in unit tests.
+
+Two cryptographic states were simplified to make this deployable today: (a)
+the employer links a disclosure to a channel off-chain, not via an on-chain
+proof; (b) vesting is a binary claim. A full cryptographically-linked
+disclosure is a post-hackathon item.
+
+**What you do, in order**
+
+1. Write `tests.cairo` if you want unit coverage beyond the build. A starter test would assert that `add_channel` then `activate_channel` moves the state Pending→Active, and that a second `redeem_disclosure` reverts.
+2. Declare the class on Sepolia: `sncast declare --network sepolia`.
+3. Deploy with the employer address as the constructor arg: `sncast deploy --network sepolia --class-hash <hash> --constructor-calldata <employer>`.
+4. Bring back the contract address and class hash.
+
+**Bring back**
+
+- Class hash, deployed address, and any test pass/fail output.
+
+**What happens next**
+
+- The TypeScript integration code gets the address wired in; Step 5's exit condition "tests pass" flips to verified once you confirm the snforge output from WSL.
+
+---
+
 ## Step 9 — Mainnet deployment + three pool transactions + demo
 
 Depends on Steps 5 and 8. Naturally last. Budget: contract deploy fee + one
