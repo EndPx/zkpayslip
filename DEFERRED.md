@@ -111,33 +111,16 @@ Proving behaviour is network-independent, so the default run is **Sepolia**
 
 ---
 
-### Step 5 — snforge tests (blocker), sepolia deploy, class declaration
+### Step 5 — snforge tests + sepolia deploy: DONE (2026-08-17)
 
-Starknet Foundry has no Windows build as of v0.63.0 — `scarb build` passes
-but `snforge test` is blocked on this OS. Two options, both yours to run:
+- scarb build: clean (284 lines)
+- snforge test: 2/2 PASS via WSL (channel lifecycle + disclosure redeem-once)
+- Sepolia deploy: contract live at `0x051c29216ddd5e9016fad4380db34e895dc8176f58ec4754cb3b4c4f14bda8b3`
+- Class hash: `0x0189e68090e90293e589b03b6dfb18552da6ad381eeae104d562548e060b8582`
+- Deployer account: `0x0235faa586929fcd7411fd3da2b446cdbbd7ff579c11e3672e5fb68ac753d84` (100 STRK funded from faucet)
+- Verified: `get_channel(0x123)` returns zero struct — contract callable on Sepolia
 
-1. Install snforge inside **WSL** (`curl -L https://raw.githubusercontent.com/foundry-rs/starknet-foundry/master/scripts/install.sh | bash`), then `cd cairo && snforge test`.
-2. Or run the contract as-is and discover errors on-chain instead of in unit tests.
-
-Two cryptographic states were simplified to make this deployable today: (a)
-the employer links a disclosure to a channel off-chain, not via an on-chain
-proof; (b) vesting is a binary claim. A full cryptographically-linked
-disclosure is a post-hackathon item.
-
-**What you do, in order**
-
-1. Write `tests.cairo` if you want unit coverage beyond the build. A starter test would assert that `add_channel` then `activate_channel` moves the state Pending→Active, and that a second `redeem_disclosure` reverts.
-2. Declare the class on Sepolia: `sncast declare --network sepolia`.
-3. Deploy with the employer address as the constructor arg: `sncast deploy --network sepolia --class-hash <hash> --constructor-calldata <employer>`.
-4. Bring back the contract address and class hash.
-
-**Bring back**
-
-- Class hash, deployed address, and any test pass/fail output.
-
-**What happens next**
-
-- The TypeScript integration code gets the address wired in; Step 5's exit condition "tests pass" flips to verified once you confirm the snforge output from WSL.
+**Remaining for Step 5**: mainnet deploy (handled in Step 9).
 
 ---
 

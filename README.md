@@ -6,7 +6,7 @@ Private payroll on Starknet: salaries move invisibly inside the STRK20 privacy p
 
 | Contract | Network | Address | Explorer |
 | --- | --- | --- | --- |
-| zkPayslip payroll helper | Sepolia | _PENDING deploy_ | — |
+| zkPayslip payroll helper | Sepolia | `0x051c29216ddd5e9016fad4380db34e895dc8176f58ec4754cb3b4c4f14bda8b3` | [Voyager](https://sepolia.voyager.online/contract/0x051c29216ddd5e9016fad4380db34e895dc8176f58ec4754cb3b4c4f14bda8b3) |
 | zkPayslip payroll helper | Mainnet | _PENDING deploy_ | — |
 | STRK20 privacy pool | Mainnet | `0x040337b1af3c663e86e333bab5a4b28da8d4652a15a69beee2b677776ffe812a` | [Voyager](https://voyager.online/contract/0x040337b1af3c663e86e333bab5a4b28da8d4652a15a69beee2b677776ffe812a) |
 
