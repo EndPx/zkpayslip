@@ -699,3 +699,111 @@
   font-family: var(--font-mono);
   color: var(--text);
 }
+
+/* ── Role doors ───────────────────────────────────────────────────────────
+   The three product surfaces, on the console's first screen.
+
+   The console column is 720px with 72px gutters, leaving 576px of usable
+   width, so three cards fit only below ~184px each — hence the tight padding
+   rather than roomier cards. They collapse to a single column at the design
+   system's 600px breakpoint, where three abreast would be unreadable. */
+
+.roles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 34px;
+}
+
+@media (max-width: 600px) {
+  .roles {
+    grid-template-columns: 1fr;
+  }
+
+  /* The console nav carries five links once the product surfaces are in it.
+     That row does not wrap, so on a phone it pushed the document to 672px
+     against a 375px viewport and the whole page scrolled sideways. Hidden
+     here instead: the role cards sit directly below and are the same three
+     destinations, and the footer still reaches /about. */
+  .navLinks {
+    display: none;
+  }
+}
+
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 18px 18px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.15s ease;
+}
+
+/* Flat at rest; hover moves the border, never adds a shadow (DESIGN.md). */
+.roleCard:hover {
+  border-color: var(--accent);
+}
+
+.roleLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.roleTitle {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.roleBody {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+.roleGo {
+  margin-top: auto;
+  padding-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Pool tools ───────────────────────────────────────────────────────────
+   Raw STRK20 actions, demoted below the roles. Real payroll steps, but
+   plumbing — so they read as a subordinate section, not the entry point. */
+
+.poolTools {
+  margin-top: 48px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line-subtle);
+}
+
+.poolLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  margin-bottom: 6px;
+}
+
+.poolNote {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  max-width: 62ch;
+  margin-bottom: 20px;
+}

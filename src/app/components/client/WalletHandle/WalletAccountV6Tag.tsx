@@ -137,9 +137,16 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: "shield", label: "Shield" },
   { key: "send", label: "Send" },
   { key: "unshield", label: "Unshield" },
-  { key: "echo", label: "Echo" },
   { key: "balances", label: "Balances" },
 ];
+
+// "echo" stays in TabKey and its handlers stay below, but it is deliberately
+// absent from TABS: the echo helper round-trips STRK through an open note to
+// exercise privacy_invoke and performs no payroll action. The starter kit's own
+// comment calls it a demo to be replaced (src/utils/constants.ts). Keeping the
+// code preserves the MIT-attributed reference implementation of the pattern our
+// Cairo contract implements; showing the tab would put a no-op in front of an
+// employer.
 
 export default function WalletAccountV6Tag() {
   const myFrontendProviderIndex = useFrontendProvider(
