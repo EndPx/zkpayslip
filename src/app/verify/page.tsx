@@ -8,6 +8,7 @@ import { redeemDisclosureOnChain, explainRevert } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
 import type { DisclosureToken } from "../../../types/payroll";
 import styles from "../employee/employee.module.css";
+import AppNav from "../components/AppNav";
 
 /**
  * Verifier page — the most minimal public surface.
@@ -211,12 +212,7 @@ function VerifyInner() {
 
   return (
     <div className={styles.page}>
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, padding: "0 var(--gutter)", borderBottom: "1px solid var(--line-subtle)", position: "sticky", top: 0, background: "rgba(13,13,13,0.92)", backdropFilter: "blur(8px)", zIndex: 20 }}>
-        <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "var(--text)" }}>
-          <span style={{ display: "grid", placeItems: "center", width: 30, height: 30, background: "var(--accent)", color: "var(--selection-ink, #1a0a04)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, borderRadius: "var(--radius-btn)" }}>zk</span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 600, letterSpacing: "0.24em", textTransform: "uppercase" }}>Payslip · Verify</span>
-        </a>
-      </nav>
+      <AppNav active="/verify" />
 
       <main className={styles.main} style={{ maxWidth: 620 }}>
         <div className={styles.tag}>Verifier</div>

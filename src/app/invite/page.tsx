@@ -6,6 +6,7 @@ import styles from "../employer/employer.module.css";
 import { useEmployer } from "@/lib/employer/store";
 import { addChannelOnChain, explainRevert } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
+import AppNav from "../components/AppNav";
 
 export default function InvitePage() {
   const { addChannel, pendingChannels, mockMode } = useEmployer();
@@ -47,16 +48,7 @@ export default function InvitePage() {
 
   return (
     <div className={styles.page}>
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, padding: "0 var(--gutter)", borderBottom: "1px solid var(--line-subtle)", position: "sticky", top: 0, background: "rgba(13,13,13,0.92)", backdropFilter: "blur(8px)", zIndex: 20 }}>
-        <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "var(--text)" }}>
-          <span style={{ display: "grid", placeItems: "center", width: 30, height: 30, background: "var(--accent)", color: "var(--selection-ink)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, borderRadius: "var(--radius-btn)" }}>zk</span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 600, letterSpacing: "0.24em", textTransform: "uppercase" }}>Payslip</span>
-        </a>
-        <div style={{ display: "flex", gap: 4, marginRight: "auto", marginLeft: 8 }}>
-          <Link href="/employer" style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text-dim)", textDecoration: "none", padding: "8px 12px" }}>Employer</Link>
-          <Link href="/invite" style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text)", textDecoration: "none", padding: "8px 12px" }}>Invite</Link>
-        </div>
-      </nav>
+      <AppNav active="/invite" />
 
       <main className={styles.main}>
         <div className={styles.tag}>Onboarding</div>

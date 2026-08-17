@@ -10,7 +10,7 @@ import {
   explainRevert,
 } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
-import SelectWallet from "../components/client/WalletHandle/SelectWallet";
+import AppNav from "../components/AppNav";
 
 function strk(n: bigint): string {
   return (Number(n) / 1e18).toFixed(2);
@@ -119,18 +119,7 @@ export default function EmployeePage() {
 
   return (
     <div className={styles.page}>
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, padding: "0 var(--gutter)", borderBottom: "1px solid var(--line-subtle)", position: "sticky", top: 0, background: "rgba(13,13,13,0.92)", backdropFilter: "blur(8px)", zIndex: 20 }}>
-        <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "var(--text)" }}>
-          <span style={{ display: "grid", placeItems: "center", width: 30, height: 30, background: "var(--accent)", color: "var(--selection-ink, #1a0a04)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, borderRadius: "var(--radius-btn)" }}>zk</span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 600, letterSpacing: "0.24em", textTransform: "uppercase" }}>Payslip</span>
-        </a>
-        <div style={{ display: "flex", gap: 4, marginRight: "auto", marginLeft: 8 }}>
-          <Link href="/employer" style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text-dim)", textDecoration: "none", padding: "8px 12px" }}>Employer</Link>
-          <Link href="/employee" style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text)", textDecoration: "none", padding: "8px 12px" }}>Employee</Link>
-          <Link href="/verify" style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--text-dim)", textDecoration: "none", padding: "8px 12px" }}>Verify</Link>
-        </div>
-        <SelectWallet variant="nav" />
-      </nav>
+      <AppNav active="/employee" />
 
       <main className={styles.main}>
         <div className={styles.tag}>Employee portal</div>
