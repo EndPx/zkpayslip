@@ -1,0 +1,325 @@
+/* Employee portal — STRK20 brand world. */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg-base);
+}
+
+.main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px var(--gutter) 80px;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tag::before {
+  content: "";
+  width: 14px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.sub {
+  color: var(--text-dim);
+  font-size: 15px;
+  max-width: 56ch;
+  margin-bottom: 36px;
+}
+
+.mockBanner {
+  background: var(--bg-raised2);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-btn);
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mockBanner::before {
+  content: "◆";
+  font-size: 10px;
+}
+
+/* Balance card */
+.balanceCard {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 28px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 36px;
+}
+
+.balanceLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  margin-bottom: 14px;
+}
+
+.balanceValue {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 60px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.balanceUnit {
+  font-size: 18px;
+  color: var(--text-faint);
+  font-weight: 400;
+}
+
+.balanceHint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 12px;
+}
+
+/* Section */
+.section {
+  margin-bottom: 36px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+
+/* Pay history */
+.payList {
+  display: flex;
+  flex-direction: column;
+}
+
+.payRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid var(--line-subtle);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.payRow:last-child {
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.payCycle {
+  color: var(--text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.payMask {
+  color: var(--text-faint);
+  letter-spacing: 0.16em;
+}
+
+.payReveal {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color 120ms ease-out, color 120ms ease-out;
+}
+
+.payReveal:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Unshield block */
+.unshieldBlock {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  margin-bottom: 8px;
+}
+
+.unshieldInput {
+  flex: 1;
+  background: var(--bg-raised2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.unshieldInput:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.unshieldBtn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-btn);
+  color: var(--text);
+  padding: 12px 22px;
+  cursor: pointer;
+  transition: background 120ms ease-out;
+}
+
+.unshieldBtn:hover:not(:disabled) {
+  background: var(--accent-dark);
+}
+
+.unshieldBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.unshieldNote {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* Disclosures */
+ .disclosureList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.disclosureRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.disclosureFact {
+  color: var(--text);
+}
+
+.disclosureVerifier {
+  color: var(--text-faint);
+}
+
+.disclosureLink {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-btn);
+  padding: 6px 12px;
+  transition: background 120ms ease-out;
+}
+
+.disclosureLink:hover {
+  background: var(--accent);
+  color: var(--selection-ink, #1a0a04);
+}
+
+.empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-card);
+}
+
+/* Generated actions */
+.genBlock {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.genBtn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  color: var(--text-dim);
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: border-color 120ms ease-out, color 120ms ease-out;
+}
+
+.genBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .payRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .unshieldBlock {
+    flex-direction: column;
+  }
+}
