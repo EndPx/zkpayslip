@@ -1,30 +1,39 @@
 /*
-  zkPayslip design tokens — STRK20 brand system
-  Source of truth: https://strk20.starknet.io/brand/tokens.json
-  Near-black canvas, one orange accent, sharp corners, mono labels.
+  zkPayslip design tokens — Morpho-grade dark console.
+  Blue-tinted near-black canvas, one blue accent, soft status hues for
+  chips and verdicts only, rounded controls, tabular data in mono.
 */
 :root {
-  --bg-base: #0d0d0d;
-  --bg-raised: #141414;
-  --bg-raised2: #1a1a1a;
-  --line: #262626;
-  --line-subtle: rgba(250, 250, 250, 0.05);
-  --text: #fafafa;
-  --text-dim: rgba(250, 250, 250, 0.65);
-  --text-label: rgba(250, 250, 250, 0.45);
-  --text-faint: #616161;
-  --accent: #c53400;
-  --accent-dark: #a02a00;
-  --accent-glow: rgba(197, 52, 0, 0.55);
-  --sel-bg: #c53400;
-  --sel-text: #1a0a04;
-  --radius-btn: 2px;
+  --bg-base: #0d0d12;
+  --bg-raised: #131318;
+  --bg-raised2: #1b1b22;
+  --line: #232330;
+  --line-subtle: rgba(250, 250, 251, 0.06);
+  --text: #fafafb;
+  --text-dim: rgba(250, 250, 251, 0.65);
+  --text-label: rgba(250, 250, 251, 0.45);
+  --text-faint: #63667c;
+  /* The interactive hue — every clickable element lives here. */
+  --accent: #536fe7;
+  --accent-dark: #4055c7;
+  --accent-soft: rgba(83, 111, 231, 0.14);
+  --accent-glow: rgba(83, 111, 231, 0.35);
+  --sel-bg: #536fe7;
+  --sel-text: #ffffff;
+  /* Status hues — chips, verdicts, and nothing else. */
+  --ok: #3dd68c;
+  --ok-soft: rgba(61, 214, 140, 0.12);
+  --warn: #f2b155;
+  --warn-soft: rgba(242, 177, 85, 0.12);
+  --bad: #ff6b6b;
+  --bad-soft: rgba(255, 107, 107, 0.12);
+  --radius-btn: 8px;
   --radius-card: 12px;
   --radius-pill: 999px;
-  --shadow-card: 0 40px 70px -30px rgba(0, 0, 0, 0.7);
-  --shadow-glow: 0 0 30px rgba(197, 52, 0, 0.55);
-  --font-display: var(--font-grotesk), "Helvetica Neue", Arial, sans-serif;
-  --font-body: var(--font-grotesk), "Helvetica Neue", Arial, sans-serif;
+  --shadow-card: 0 16px 40px -24px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 30px var(--accent-glow);
+  --font-display: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-body: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-mono-ui), ui-monospace, SFMono-Regular, Menlo, monospace;
   --gutter: clamp(20px, 5vw, 72px);
   --max-w: 1280px;
@@ -67,7 +76,7 @@ textarea {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2e2e2e transparent;
+  scrollbar-color: #2e2e3a transparent;
 }
 ::-webkit-scrollbar {
   width: 10px;
@@ -77,12 +86,12 @@ textarea {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #26262f;
   border: 2px solid var(--bg-base);
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
+  background: #3a3a46;
 }
 
 @media (prefers-reduced-motion: reduce) {
