@@ -11,6 +11,7 @@ import {
 } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
 import AppNav from "../components/AppNav";
+import ConnectGate, { useIsConnected } from "../components/ConnectGate";
 
 function strk(n: bigint): string {
   return (Number(n) / 1e18).toFixed(2);
@@ -18,7 +19,6 @@ function strk(n: bigint): string {
 
 export default function EmployeePage() {
   const {
-    mockMode,
     shieldedBalance,
     payHistory,
     disclosures,
@@ -35,7 +35,10 @@ export default function EmployeePage() {
   const [proofErr, setProofErr] = useState<string | null>(null);
   const [proofTx, setProofTx] = useState<string | null>(null);
 
+  // Unshielding and proof generation are signed actions; without a wallet
+  // this portal is a read-only guest view.
   const myWalletAccount = useStoreWallet((s) => s.myWalletAccount);
+  const connected = useIsConnected();
 
   function handleUnshield() {
     setUnshieldErr(null);
@@ -129,28 +132,21 @@ export default function EmployeePage() {
           address, and generate a one-time income proof for a verifier.
         </p>
 
-        {mockMode && (
-          <div className={styles.mockBanner}>
-            MOCK MODE — no wallet connected. Balance and history are synthetic.
-            Connect a Ready wallet on Mainnet or Sepolia for real reads.
-          </div>
+        {!connected && (
+          <ConnectGate message="Guest view — your shielded balance, pay history, and proofs are only readable with your own wallet." />
         )}
 
-        {/* Shielded balance */}
+        {/* Shielded balance — a guest sees the structure, not a number. */}
         <div className={styles.balanceCard}>
           <div className={styles.balanceLabel}>Shielded balance</div>
           <div className={styles.balanceValue}>
-            {strk(shieldedBalance)}
+            {connected ? strk(shieldedBalance) : "—.—"}
             <span className={styles.balanceUnit}>STRK</span>
           </div>
           <div className={styles.balanceHint}>
-            Decrypts on demand · discarded on unmount · never persisted
-          </div>
-          {/* Demo simulator — lets us see the flow without a wallet */}
-          <div className={styles.genBlock}>
-            <button className={styles.genBtn} onClick={handleSimulatePay}>
-              + Simulate payment (demo)
-            </button>
+            {connected
+              ? "Decrypts on demand · discarded on unmount · never persisted"
+              : "Connect your wallet to read your shielded balance from the pool"}
           </div>
         </div>
 
@@ -159,7 +155,7 @@ export default function EmployeePage() {
           <h2 className={styles.sectionTitle}>Pay-period history</h2>
           {payHistory.length === 0 ? (
             <div className={styles.empty}>
-              No payments yet — simulate one above, or connect a wallet
+              No payments yet — connect your wallet to load your pay history
             </div>
           ) : (
             <div className={styles.payList}>
@@ -200,13 +196,14 @@ export default function EmployeePage() {
             <button
               className={styles.unshieldBtn}
               onClick={handleUnshield}
-              disabled={shieldedBalance === 0n}
+              disabled={!connected || shieldedBalance === 0n}
+              title={!connected ? "Connect your wallet to sign" : undefined}
             >
               Unshield
             </button>
           </div>
-          {unshieldErr && <div className={styles.unshieldNote} style={{ color: "var(--accent)" }}>{unshieldErr}</div>}
-          {unshieldOk && <div className={styles.unshieldNote} style={{ color: "var(--text)" }}>✓ Unshield submitted (mock)</div>}
+          {unshieldErr && <div className={styles.unshieldNote} style={{ color: "var(--bad)" }}>{unshieldErr}</div>}
+          {unshieldOk && <div className={styles.unshieldNote} style={{ color: "var(--ok)" }}>✓ Unshield submitted (mock)</div>}
           <p className={styles.unshieldNote}>
             Unshielding reveals the amount at the public edge — by design.
           </p>
@@ -230,13 +227,20 @@ export default function EmployeePage() {
           <button
             className={styles.unshieldBtn}
             onClick={handleCreateDisclosure}
-            disabled={proving}
+            disabled={!connected || proving}
+            title={!connected ? "Connect your wallet to sign" : undefined}
             style={{ marginBottom: 16 }}
           >
             {proving ? "Signing…" : "+ Generate proof"}
           </button>
+          {!connected && (
+            <div className={styles.unshieldNote} style={{ marginBottom: 14 }}>
+              Generating a proof writes create_disclosure on-chain — it needs
+              your signature.
+            </div>
+          )}
           {proofErr && (
-            <div className={styles.unshieldNote} style={{ color: "var(--accent)", marginBottom: 14, maxWidth: "60ch" }}>
+            <div className={styles.unshieldNote} style={{ color: "var(--bad)", marginBottom: 14, maxWidth: "60ch" }}>
               {proofErr}
             </div>
           )}
@@ -279,6 +283,26 @@ export default function EmployeePage() {
             </div>
           )}
         </div>
+
+        {/* Demo tools — clearly synthetic, for the demo video only. Nothing
+            here touches the chain or pretends to be live state. */}
+        <details style={{ marginBottom: 8 }}>
+          <summary
+            style={{
+              cursor: "pointer",
+              fontSize: 13,
+              color: "var(--text-faint)",
+              userSelect: "none",
+            }}
+          >
+            Demo tools (synthetic data, not on-chain)
+          </summary>
+          <div className={styles.genBlock}>
+            <button className={styles.genBtn} onClick={handleSimulatePay}>
+              + Simulate incoming payment
+            </button>
+          </div>
+        </details>
       </main>
     </div>
   );

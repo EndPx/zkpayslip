@@ -1,4 +1,4 @@
-/* Employee portal — STRK20 brand world. */
+/* Employee portal + verifier — Morpho-grade dark console. */
 
 .page {
   min-height: 100vh;
@@ -6,7 +6,7 @@
 }
 
 .main {
-  max-width: 760px;
+  max-width: 780px;
   margin: 0 auto;
   padding: 48px var(--gutter) 80px;
 }
@@ -14,7 +14,7 @@
 .tag {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent);
   display: flex;
@@ -28,15 +28,15 @@
   width: 14px;
   height: 2px;
   background: var(--accent);
+  border-radius: 1px;
 }
 
 .h1 {
   font-family: var(--font-display);
-  font-size: clamp(28px, 4vw, 44px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-  text-transform: uppercase;
+  font-size: clamp(26px, 3.4vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
   margin-bottom: 8px;
 }
 
@@ -44,30 +44,24 @@
   color: var(--text-dim);
   font-size: 15px;
   max-width: 56ch;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
 }
 
 .mockBanner {
   background: var(--bg-raised2);
-  border: 1px solid var(--accent);
+  border: 1px solid var(--line);
   border-radius: var(--radius-btn);
   padding: 12px 16px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--accent);
+  font-size: 13.5px;
+  color: var(--text-dim);
   margin-bottom: 28px;
   display: flex;
   align-items: center;
   gap: 10px;
+  word-break: break-word;
 }
 
-.mockBanner::before {
-  content: "◆";
-  font-size: 10px;
-}
-
-/* Balance card */
+/* Balance card — the hero number of the portal. */
 .balanceCard {
   background: var(--bg-raised);
   border: 1px solid var(--line);
@@ -80,7 +74,7 @@
 .balanceLabel {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-label);
   margin-bottom: 14px;
@@ -88,9 +82,9 @@
 
 .balanceValue {
   font-family: var(--font-display);
-  font-size: clamp(40px, 6vw, 60px);
-  font-weight: 700;
-  letter-spacing: -0.035em;
+  font-size: clamp(38px, 6vw, 54px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   display: flex;
@@ -120,7 +114,6 @@
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: -0.01em;
   margin-bottom: 14px;
 }
@@ -129,6 +122,10 @@
 .payList {
   display: flex;
   flex-direction: column;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 2px 18px;
 }
 
 .payRow {
@@ -136,36 +133,34 @@
   grid-template-columns: auto 1fr auto;
   gap: 16px;
   align-items: center;
-  padding: 14px 0;
-  border-top: 1px solid var(--line-subtle);
+  padding: 12px 0;
   font-family: var(--font-mono);
   font-size: 13px;
 }
 
-.payRow:last-child {
-  border-bottom: 1px solid var(--line-subtle);
+.payRow + .payRow {
+  border-top: 1px solid var(--line-subtle);
 }
 
 .payCycle {
   color: var(--text);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .payMask {
   color: var(--text-faint);
   letter-spacing: 0.16em;
+  justify-self: end;
 }
 
 .payReveal {
   background: transparent;
   border: 1px solid var(--line);
-  border-radius: var(--radius-btn);
+  border-radius: 7px;
   color: var(--text-dim);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
   padding: 6px 12px;
   cursor: pointer;
   transition: border-color 120ms ease-out, color 120ms ease-out;
@@ -190,33 +185,34 @@
   color: var(--text);
   border: 1px solid var(--line);
   border-radius: var(--radius-btn);
-  padding: 12px 14px;
+  padding: 11px 14px;
   font-family: var(--font-mono);
   font-size: 14px;
+  transition: border-color 120ms ease-out, box-shadow 120ms ease-out;
 }
 
 .unshieldInput:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .unshieldBtn {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 13.5px;
   font-weight: 600;
   background: var(--accent);
   border: 1px solid var(--accent);
   border-radius: var(--radius-btn);
-  color: var(--text);
-  padding: 12px 22px;
+  color: #fff;
+  padding: 11px 22px;
   cursor: pointer;
   transition: background 120ms ease-out;
 }
 
 .unshieldBtn:hover:not(:disabled) {
   background: var(--accent-dark);
+  border-color: var(--accent-dark);
 }
 
 .unshieldBtn:disabled {
@@ -225,12 +221,12 @@
 }
 
 .unshieldNote {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--text-faint);
 }
 
 /* Disclosures */
- .disclosureList {
+.disclosureList {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -258,36 +254,35 @@
 }
 
 .disclosureLink {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
   color: var(--accent);
   text-decoration: none;
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-btn);
+  border: 1px solid rgba(83, 111, 231, 0.45);
+  background: var(--accent-soft);
+  border-radius: 7px;
   padding: 6px 12px;
-  transition: background 120ms ease-out;
+  white-space: nowrap;
+  transition: background 120ms ease-out, border-color 120ms ease-out;
 }
 
 .disclosureLink:hover {
   background: var(--accent);
-  color: var(--selection-ink, #1a0a04);
+  border-color: var(--accent);
+  color: #fff;
 }
 
 .empty {
-  padding: 32px 20px;
+  padding: 40px 24px;
   text-align: center;
   color: var(--text-faint);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  border: 1px solid var(--line-subtle);
+  font-size: 14px;
+  border: 1px dashed var(--line);
   border-radius: var(--radius-card);
 }
 
-/* Generated actions */
+/* Demo tools — clearly synthetic affordances for the demo video only. */
 .genBlock {
   display: flex;
   gap: 10px;
@@ -296,22 +291,21 @@
 }
 
 .genBtn {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
   background: transparent;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-btn);
-  color: var(--text-dim);
-  padding: 10px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 7px;
+  color: var(--text-faint);
+  padding: 9px 16px;
   cursor: pointer;
   transition: border-color 120ms ease-out, color 120ms ease-out;
 }
 
 .genBtn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--warn);
+  color: var(--warn);
 }
 
 @media (max-width: 600px) {
