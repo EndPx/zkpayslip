@@ -48,14 +48,21 @@ export default function Page() {
           Browse everything as a guest — signing unlocks with a wallet.
         </p>
 
-        {/* Roles — the three product surfaces, the reason anyone is here. */}
+        {/* Roles — the three product surfaces, the reason anyone is here.
+            An editorial index, not a card grid: numbered rows behind
+            hairline rules, the way a ledger lists who it serves. */}
         <div className={styles.roles}>
-          {ROLES.map((r) => (
-            <a key={r.href} href={r.href} className={styles.roleCard}>
-              <span className={styles.roleLabel}>{r.label}</span>
-              <span className={styles.roleTitle}>{r.title}</span>
-              <span className={styles.roleBody}>{r.body}</span>
-              <span className={styles.roleGo}>Open →</span>
+          {ROLES.map((r, i) => (
+            <a key={r.href} href={r.href} className={styles.roleRow}>
+              <span className={styles.roleIndex}>{String(i + 1).padStart(2, "0")}</span>
+              <span className={styles.roleMain}>
+                <span className={styles.roleLabel}>{r.label}</span>
+                <span className={styles.roleTitle}>{r.title}</span>
+                <span className={styles.roleBody}>{r.body}</span>
+              </span>
+              <span className={styles.roleGo} aria-hidden>
+                →
+              </span>
             </a>
           ))}
         </div>
