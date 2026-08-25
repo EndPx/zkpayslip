@@ -260,7 +260,7 @@ function VerifyInner() {
           <div
             style={{
               background: "var(--bg-raised)",
-              border: `1px solid ${verdict === "VALID" ? "rgba(61, 214, 140, 0.45)" : "var(--line)"}`,
+              border: `1px solid ${verdict === "VALID" ? "rgba(255, 207, 154, 0.45)" : "var(--line)"}`,
               borderRadius: "var(--radius-card)",
               padding: "26px 28px",
               marginTop: 24,
@@ -281,7 +281,7 @@ function VerifyInner() {
                   placeItems: "center",
                   width: 36,
                   height: 36,
-                  border: `1px solid ${verdict === "VALID" ? "rgba(61, 214, 140, 0.45)" : "var(--line)"}`,
+                  border: `1px solid ${verdict === "VALID" ? "rgba(255, 207, 154, 0.45)" : "var(--line)"}`,
                   borderRadius: "var(--radius-btn)",
                   color: verdict === "VALID" ? "var(--ok)" : "var(--text-faint)",
                   fontSize: 18,
@@ -311,7 +311,7 @@ function VerifyInner() {
                     letterSpacing: "0.16em",
                     textTransform: "uppercase",
                     color: source === "chain" ? "var(--ok)" : "var(--text-faint)",
-                    border: `1px solid ${source === "chain" ? "rgba(61, 214, 140, 0.45)" : "var(--line)"}`,
+                    border: `1px solid ${source === "chain" ? "rgba(255, 207, 154, 0.45)" : "var(--line)"}`,
                     borderRadius: "var(--radius-pill)",
                     padding: "3px 10px",
                   }}
