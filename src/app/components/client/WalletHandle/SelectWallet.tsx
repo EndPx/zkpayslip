@@ -59,6 +59,18 @@ export default function SelectWallet({ variant = "ctaBig" }: { variant?: "nav" |
     return !id.includes("metamask") && !id.includes("braavos");
   });
 
+  // Guest-mode gates (ConnectGate) anywhere in the app open this picker
+  // through the shared store flag instead of owning a second modal.
+  const displaySelectWalletUI = useStoreWallet((s) => s.displaySelectWalletUI);
+  const setSelectWalletUIFlag = useStoreWallet((s) => s.setSelectWalletUI);
+
+  useEffect(() => {
+    if (displaySelectWalletUI) {
+      setPickerOpen(true);
+      setSelectWalletUIFlag(false);
+    }
+  }, [displaySelectWalletUI, setSelectWalletUIFlag]);
+
   // Unchanged connection flow: takes the wallet-standard wallet and populates
   // the zustand store with a WalletAccountV6 + account/chain/permissions.
   async function handleSelectedWallet(selectedWallet: WalletWithStarknetFeatures) {
