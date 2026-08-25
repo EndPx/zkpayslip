@@ -1,20 +1,16 @@
 "use client";
 
 import styles from "./uni.module.css";
-import SelectWallet from "./components/client/WalletHandle/SelectWallet";
 import WalletAccountV6Tag from "./components/client/WalletHandle/WalletAccountV6Tag";
+import AppNav from "./components/AppNav";
 
 /**
  * The console is the first screen, so it has to answer "who are you and what
  * are you here to do" before it offers any primitive.
  *
- * It previously opened straight onto the starter kit's pool tabs — shield,
- * send, unshield, balances — with no route to the employer dashboard, the
- * employee portal, or the verifier page at all. Those three are the product,
- * and they were unreachable from here: a judge opening the demo URL landed on
- * a generic privacy-pool toolbox and stopped.
- *
- * So: roles first, plumbing second.
+ * Roles first, plumbing second: the three product surfaces lead, and the raw
+ * STRK20 pool actions sit below them as setup tooling. A guest can open every
+ * door from here — each surface renders read-only until a wallet connects.
  */
 
 const ROLES = [
@@ -41,32 +37,7 @@ const ROLES = [
 export default function Page() {
   return (
     <div className={styles.page}>
-      <nav className={styles.nav}>
-        <a className={styles.brand} href="/">
-          <span className={styles.brandMark}>zk</span>
-          <span className={styles.brandName}>Payslip</span>
-        </a>
-        <div className={styles.navLinks}>
-          <a className={styles.navLink} href="/employer">
-            Employer
-          </a>
-          <a className={styles.navLink} href="/employee">
-            Employee
-          </a>
-          <a className={styles.navLink} href="/verify">
-            Verify
-          </a>
-          <a className={styles.navLink} href="/about">
-            About
-          </a>
-          <a className={styles.navLink} href="/bench">
-            Bench
-          </a>
-        </div>
-        <div className={styles.navRight}>
-          <SelectWallet variant="nav" />
-        </div>
-      </nav>
+      <AppNav />
 
       <main className={styles.main}>
         <div className={styles.appTag}>Private payroll console</div>
@@ -74,7 +45,7 @@ export default function Page() {
         <p className={styles.appSub}>
           Salaries move invisibly inside the STRK20 privacy pool, and any
           employee can still prove their income to exactly one verifier, once.
-          Pick where you are starting from.
+          Browse everything as a guest — signing unlocks with a wallet.
         </p>
 
         {/* Roles — the three product surfaces, the reason anyone is here. */}
