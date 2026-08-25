@@ -58,15 +58,15 @@ export default function AboutPage() {
               width="380"
               height="272"
               rx="12"
-              fill="#141414"
-              stroke="#262626"
+              fill="#0a0c12"
+              stroke="#1d2029"
             />
             <text
               x="64"
               y="62"
               className={styles.schematicText}
               fontSize="11"
-              fill="#616161"
+              fill="#5b5e6d"
             >
               PAYSLIP PROOF
             </text>
@@ -76,37 +76,37 @@ export default function AboutPage() {
               textAnchor="end"
               className={styles.schematicText}
               fontSize="11"
-              fill="#536fe7"
+              fill="#ffb24d"
             >
               № 0042
             </text>
 
             <g className={styles.schematicText} fontSize="12">
-              <text x="64" y="108" fill="#616161">
+              <text x="64" y="108" fill="#5b5e6d">
                 FACT
               </text>
-              <text x="180" y="108" fill="#fafafa">
+              <text x="180" y="108" fill="#f4f1ea">
                 INCOME ≥ 4,200 STRK / MO
               </text>
 
-              <text x="64" y="146" fill="#616161">
+              <text x="64" y="146" fill="#5b5e6d">
                 VERIFIER
               </text>
-              <text x="180" y="146" fill="#fafafa">
+              <text x="180" y="146" fill="#f4f1ea">
                 0x07d3…e91a
               </text>
 
-              <text x="64" y="184" fill="#616161">
+              <text x="64" y="184" fill="#5b5e6d">
                 EXPIRY
               </text>
-              <text x="180" y="184" fill="#fafafa">
+              <text x="180" y="184" fill="#f4f1ea">
                 2026-09-30
               </text>
 
-              <text x="64" y="222" fill="#536fe7">
+              <text x="64" y="222" fill="#ffb24d">
                 NULLIFIER
               </text>
-              <text x="180" y="222" fill="#536fe7">
+              <text x="180" y="222" fill="#ffb24d">
                 0x8f4a…c2
               </text>
             </g>
@@ -117,7 +117,7 @@ export default function AboutPage() {
               y="226"
               width="150"
               height="2"
-              fill="#536fe7"
+              fill="#ffb24d"
             />
 
             <rect
@@ -127,7 +127,7 @@ export default function AboutPage() {
               height="26"
               rx="2"
               fill="none"
-              stroke="#536fe7"
+              stroke="#ffb24d"
             />
             <text
               className={`${styles.schematicText} ${styles.sealPulse}`}
@@ -135,7 +135,7 @@ export default function AboutPage() {
               y="267"
               textAnchor="middle"
               fontSize="10"
-              fill="#536fe7"
+              fill="#ffb24d"
             >
               VALID ONCE
             </text>
@@ -145,9 +145,9 @@ export default function AboutPage() {
               textAnchor="end"
               className={styles.schematicText}
               fontSize="10"
-              fill="#616161"
+              fill="#5b5e6d"
             >
-              ONE FACT · ONE VERIFIER · ONE REDEMPTION
+              ONE VERIFIER · ONE REDEMPTION
             </text>
           </svg>
         </div>
