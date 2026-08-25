@@ -22,6 +22,8 @@ const LINKS = [
   { href: "/invite", label: "Invite" },
   { href: "/employee", label: "Employee" },
   { href: "/verify", label: "Verify" },
+  { href: "/about", label: "About" },
+  { href: "/bench", label: "Bench" },
 ];
 
 export default function AppNav({ active }: { active?: string }) {
