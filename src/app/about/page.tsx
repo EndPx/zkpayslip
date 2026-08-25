@@ -76,7 +76,7 @@ export default function AboutPage() {
               textAnchor="end"
               className={styles.schematicText}
               fontSize="11"
-              fill="#c53400"
+              fill="#536fe7"
             >
               № 0042
             </text>
@@ -103,10 +103,10 @@ export default function AboutPage() {
                 2026-09-30
               </text>
 
-              <text x="64" y="222" fill="#c53400">
+              <text x="64" y="222" fill="#536fe7">
                 NULLIFIER
               </text>
-              <text x="180" y="222" fill="#c53400">
+              <text x="180" y="222" fill="#536fe7">
                 0x8f4a…c2
               </text>
             </g>
@@ -117,7 +117,7 @@ export default function AboutPage() {
               y="226"
               width="150"
               height="2"
-              fill="#c53400"
+              fill="#536fe7"
             />
 
             <rect
@@ -127,7 +127,7 @@ export default function AboutPage() {
               height="26"
               rx="2"
               fill="none"
-              stroke="#c53400"
+              stroke="#536fe7"
             />
             <text
               className={`${styles.schematicText} ${styles.sealPulse}`}
@@ -135,7 +135,7 @@ export default function AboutPage() {
               y="267"
               textAnchor="middle"
               fontSize="10"
-              fill="#c53400"
+              fill="#536fe7"
             >
               VALID ONCE
             </text>
