@@ -204,7 +204,7 @@
   background: var(--accent);
   border: 1px solid var(--accent);
   border-radius: var(--radius-btn);
-  color: #fff;
+  color: var(--bg-base);
   padding: 11px 22px;
   cursor: pointer;
   transition: background 120ms ease-out;
@@ -259,7 +259,7 @@
   font-weight: 500;
   color: var(--accent);
   text-decoration: none;
-  border: 1px solid rgba(83, 111, 231, 0.45);
+  border: 1px solid rgba(255, 178, 77, 0.45);
   background: var(--accent-soft);
   border-radius: 7px;
   padding: 6px 12px;
@@ -270,7 +270,7 @@
 .disclosureLink:hover {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--bg-base);
 }
 
 .empty {
