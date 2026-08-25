@@ -1,38 +1,43 @@
 /*
-  zkPayslip design tokens — Morpho-grade dark console.
-  Blue-tinted near-black canvas, one blue accent, soft status hues for
-  chips and verdicts only, rounded controls, tabular data in mono.
+  zkPayslip design tokens — "ember & bone" (taste-driven, 2026-08-26).
+  A named direction, decided first: angelcore adapted to a console. A
+  near-black void, bone-white type, and ONE warm light. Gold is the only
+  interactive hue; red appears exactly once — a burned nullifier, a failed
+  verdict. High-contrast serif carries the voice, mono carries the chain's
+  numbers, and film grain sits over the frame like it does on every dark
+  shot worth looking at.
 */
 :root {
-  --bg-base: #0d0d12;
-  --bg-raised: #131318;
-  --bg-raised2: #1b1b22;
-  --line: #232330;
-  --line-subtle: rgba(250, 250, 251, 0.06);
-  --text: #fafafb;
-  --text-dim: rgba(250, 250, 251, 0.65);
-  --text-label: rgba(250, 250, 251, 0.45);
-  --text-faint: #63667c;
-  /* The interactive hue — every clickable element lives here. */
-  --accent: #536fe7;
-  --accent-dark: #4055c7;
-  --accent-soft: rgba(83, 111, 231, 0.14);
-  --accent-glow: rgba(83, 111, 231, 0.35);
-  --sel-bg: #536fe7;
-  --sel-text: #ffffff;
-  /* Status hues — chips, verdicts, and nothing else. */
-  --ok: #3dd68c;
-  --ok-soft: rgba(61, 214, 140, 0.12);
-  --warn: #f2b155;
-  --warn-soft: rgba(242, 177, 85, 0.12);
-  --bad: #ff6b6b;
-  --bad-soft: rgba(255, 107, 107, 0.12);
-  --radius-btn: 8px;
-  --radius-card: 12px;
+  --bg-base: #05060a;
+  --bg-raised: #0a0c12;
+  --bg-raised2: #11131b;
+  --line: #1d2029;
+  --line-subtle: rgba(244, 241, 234, 0.06);
+  --text: #f4f1ea;
+  --text-dim: rgba(244, 241, 234, 0.66);
+  --text-label: rgba(244, 241, 234, 0.44);
+  --text-faint: #5b5e6d;
+  /* The one warm light — every clickable element lives here. */
+  --accent: #ffb24d;
+  --accent-dark: #ff7a18;
+  --accent-soft: rgba(255, 178, 77, 0.12);
+  --accent-glow: rgba(255, 178, 77, 0.35);
+  --sel-bg: #ffb24d;
+  --sel-text: #05060a;
+  /* Status — pale gold for success (the light, approving), red once for
+     burn or failure. Nothing else gets hue. */
+  --ok: #ffcf9a;
+  --ok-soft: rgba(255, 178, 77, 0.1);
+  --warn: #ff7a18;
+  --warn-soft: rgba(255, 122, 24, 0.12);
+  --bad: #ff2a2a;
+  --bad-soft: rgba(255, 42, 42, 0.1);
+  --radius-btn: 4px;
+  --radius-card: 10px;
   --radius-pill: 999px;
-  --shadow-card: 0 16px 40px -24px rgba(0, 0, 0, 0.8);
-  --shadow-glow: 0 0 30px var(--accent-glow);
-  --font-display: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --shadow-card: 0 24px 60px -32px rgba(0, 0, 0, 0.9);
+  --shadow-glow: 0 0 34px var(--accent-glow);
+  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
   --font-body: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-mono-ui), ui-monospace, SFMono-Regular, Menlo, monospace;
   --gutter: clamp(20px, 5vw, 72px);
@@ -59,6 +64,17 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Film grain over the whole frame — the dark shots in the reference corpus
+   are never clean black. Static, pointer-transparent, near-invisible. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.05;
+}
+
 ::selection {
   background: var(--sel-bg);
   color: var(--sel-text);
@@ -76,7 +92,7 @@ textarea {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2e2e3a transparent;
+  scrollbar-color: #1d2029 transparent;
 }
 ::-webkit-scrollbar {
   width: 10px;
@@ -86,12 +102,12 @@ textarea {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #26262f;
+  background: #1d2029;
   border: 2px solid var(--bg-base);
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a46;
+  background: #2a2d38;
 }
 
 @media (prefers-reduced-motion: reduce) {

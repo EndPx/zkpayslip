@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, IBM_Plex_Mono } from "next/font/google";
+import { Inter, IBM_Plex_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 
-// Morpho-grade console direction (2026-08-24 redesign): display/body → Inter,
-// a neutral sans with tabular figures for dense data surfaces; labels and
-// hashes stay in IBM Plex Mono.
+// "Ember & bone" direction (2026-08-26, taste-driven): a high-contrast serif
+// carries the voice (divine-editorial, not fintech), Inter keeps UI legible,
+// IBM Plex Mono keeps the chain's numbers honest.
 const grotesk = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -15,6 +15,11 @@ const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-mono-ui",
+  display: "swap",
+});
+const serif = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -33,20 +38,25 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${grotesk.variable} ${plexMono.variable}`}
+      className={`${grotesk.variable} ${plexMono.variable} ${serif.variable}`}
       suppressHydrationWarning
     >
       <body>
         {
-          // zkPayslip direction contract (2026-08-24 redesign, user-pinned)
+          // zkPayslip direction contract — "ember & bone" (2026-08-26,
+          // taste-driven, replaces the Morpho-blue console)
           // THESIS: salaries move invisibly inside the STRK20 pool while
-          //   income proofs open to exactly one verifier, once — rendered as
-          //   a Morpho-grade console a guest can walk through end to end,
-          //   where every signing action stays locked until a wallet connects.
-          // OWN-WORLD: blue-tinted near-black #0d0d12 canvas, Morpho-blue
-          //   #536fe7 as the single interactive hue, soft status hues for
-          //   chips and verdicts only, 8px controls on 12px cards, Inter for
-          //   UI with tabular figures, IBM Plex Mono for addresses/hashes.
+          //   income proofs open to exactly one verifier, once — the UI is
+          //   that sentence: a void where one warm light opens.
+          // OWN-WORLD: near-black void #05060a, bone-white #f4f1ea type,
+          //   ONE warm light — gold #ffb24d owns every interactive element;
+          //   red #ff2a2a appears exactly once (burned nullifier, failed
+          //   verdict). Fraunces serif for display, Inter for UI, IBM Plex
+          //   Mono for addresses/hashes. Film grain over the whole frame.
+          // GRAMMAR (from the taste skill): hero-on-black — every surface
+          //   opens on ONE centered object in negative space, not a card
+          //   grid; hairline rules and editorial numbering instead of pill
+          //   chips; one accent per view.
           // STORY: the app itself is the first screen (Connect up front);
           //   guests browse real read-only chain data — verdicts, structure,
           //   empty states that say what connecting unlocks. Nothing synthetic
