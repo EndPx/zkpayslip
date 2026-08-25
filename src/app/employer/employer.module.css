@@ -135,7 +135,7 @@
   font-weight: 500;
   text-decoration: none;
   color: var(--accent);
-  border: 1px solid rgba(83, 111, 231, 0.45);
+  border: 1px solid rgba(255, 178, 77, 0.45);
   background: var(--accent-soft);
   border-radius: var(--radius-btn);
   padding: 7px 14px;
@@ -146,7 +146,7 @@
 .sectionAction:hover {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--bg-base);
 }
 
 .sectionAction:disabled {
@@ -210,13 +210,13 @@
 .statePending {
   background: var(--warn-soft);
   color: var(--warn);
-  border-color: rgba(242, 177, 85, 0.35);
+  border-color: rgba(255, 122, 24, 0.35);
 }
 
 .stateActive {
   background: var(--ok-soft);
   color: var(--ok);
-  border-color: rgba(61, 214, 140, 0.35);
+  border-color: rgba(255, 207, 154, 0.35);
 }
 
 .stateTerminated {
@@ -365,7 +365,7 @@
   background: var(--accent);
   border: 1px solid var(--accent);
   border-radius: var(--radius-btn);
-  color: #fff;
+  color: var(--bg-base);
   padding: 10px 22px;
   cursor: pointer;
   transition: background 120ms ease-out, border-color 120ms ease-out;
