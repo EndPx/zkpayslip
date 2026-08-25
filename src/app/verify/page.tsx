@@ -260,7 +260,7 @@ function VerifyInner() {
           <div
             style={{
               background: "var(--bg-raised)",
-              border: `1px solid ${verdict === "VALID" ? "var(--accent)" : "var(--line)"}`,
+              border: `1px solid ${verdict === "VALID" ? "rgba(61, 214, 140, 0.45)" : "var(--line)"}`,
               borderRadius: "var(--radius-card)",
               padding: "26px 28px",
               marginTop: 24,
@@ -272,6 +272,7 @@ function VerifyInner() {
                 alignItems: "center",
                 gap: 14,
                 marginBottom: revealedFact ? 18 : 0,
+                flexWrap: "wrap",
               }}
             >
               <span
@@ -280,10 +281,11 @@ function VerifyInner() {
                   placeItems: "center",
                   width: 36,
                   height: 36,
-                  border: `1px solid ${verdict === "VALID" ? "var(--accent)" : "var(--line)"}`,
+                  border: `1px solid ${verdict === "VALID" ? "rgba(61, 214, 140, 0.45)" : "var(--line)"}`,
                   borderRadius: "var(--radius-btn)",
-                  color: verdict === "VALID" ? "var(--accent)" : "var(--text-faint)",
+                  color: verdict === "VALID" ? "var(--ok)" : "var(--text-faint)",
                   fontSize: 18,
+                  flex: "none",
                 }}
               >
                 {verdictSymbol(verdict)}
@@ -308,8 +310,8 @@ function VerifyInner() {
                     fontSize: 10,
                     letterSpacing: "0.16em",
                     textTransform: "uppercase",
-                    color: source === "chain" ? "var(--accent)" : "var(--text-faint)",
-                    border: `1px solid ${source === "chain" ? "var(--accent)" : "var(--line)"}`,
+                    color: source === "chain" ? "var(--ok)" : "var(--text-faint)",
+                    border: `1px solid ${source === "chain" ? "rgba(61, 214, 140, 0.45)" : "var(--line)"}`,
                     borderRadius: "var(--radius-pill)",
                     padding: "3px 10px",
                   }}
@@ -338,7 +340,7 @@ function VerifyInner() {
                   style={{
                     fontFamily: "var(--font-mono)",
                     fontSize: 16,
-                    color: "var(--accent)",
+                    color: "var(--text)",
                     marginBottom: 18,
                   }}
                 >
@@ -370,11 +372,26 @@ function VerifyInner() {
                 <button
                   className={styles.unshieldBtn}
                   onClick={redeem}
-                  disabled={redeeming}
+                  disabled={!myWalletAccount || redeeming}
+                  title={!myWalletAccount ? "Connect the verifier wallet to redeem" : undefined}
                   style={{ marginTop: 20 }}
                 >
                   {redeeming ? "Burning…" : "Redeem (burn nullifier)"}
                 </button>
+                {!myWalletAccount && (
+                  <p
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 11,
+                      color: "var(--text-faint)",
+                      marginTop: 10,
+                      maxWidth: "58ch",
+                    }}
+                  >
+                    🔒 Redeeming is a signed transaction — connect the verifier
+                    wallet. Checking, as you just did, never needs one.
+                  </p>
+                )}
                 {redeemErr && (
                   <p
                     style={{
