@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./employer.module.css";
 import { useEmployer } from "@/lib/employer/store";
-import { executePayrollRun, createMockDeps } from "@/lib/payroll";
+import { executePayrollRun, createMockDeps, createWalletDeps } from "@/lib/payroll";
 import {
   addChannelOnChain,
   activateChannelOnChain,
@@ -12,8 +12,10 @@ import {
   explainRevert,
 } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
-import { addrSTRK } from "@/utils/constants";
+import { addrSTRK, myFrontendProviders, Strk20Networks } from "@/utils/constants";
 import AppNav from "../components/AppNav";
+import ConnectGate, { useIsConnected } from "../components/ConnectGate";
+import { useFrontendProvider } from "../components/client/provider/providerContext";
 
 function shortAddr(a: string): string {
   if (!a) return "—";
@@ -54,8 +56,11 @@ export default function EmployerPage() {
   const [chainErr, setChainErr] = useState<string | null>(null);
   const [chainTx, setChainTx] = useState<string | null>(null);
 
-  // Channel writes are owner-only on-chain; without a wallet they stay local.
+  // Every contract write is owner-only; without a wallet this surface is
+  // read-only guest mode and the signing actions stay locked.
   const myWalletAccount = useStoreWallet((s) => s.myWalletAccount);
+  const connected = useIsConnected();
+  const providerIndex = useFrontendProvider((s) => s.currentFrontendProviderIndex);
 
   const treasuryStrk = (Number(treasuryBalance) / 1e18).toFixed(2);
   const active = activeChannels();
@@ -119,7 +124,7 @@ export default function EmployerPage() {
    * createWalletDeps and nothing else about this path changes.
    */
   async function handleExecuteRun() {
-    if (running || active.length === 0) return;
+    if (!connected || running || active.length === 0) return;
     setRunning(true);
     setRunNote(null);
 
@@ -131,11 +136,20 @@ export default function EmployerPage() {
     const entries = active.map((c) => ({ channelId: c.id, amount: 10n ** 18n }));
     const recipients = Object.fromEntries(active.map((c) => [c.id, c.recipientAddress]));
 
+    // A connected employer signs real pool actions through the wallet; the
+    // mock transport only ever runs when nothing can sign.
+    const networkLive =
+      !!myWalletAccount && Strk20Networks[providerIndex] !== undefined;
+    const deps =
+      networkLive && myWalletAccount
+        ? createWalletDeps(myWalletAccount, myFrontendProviders[providerIndex])
+        : createMockDeps();
+
     const runId = startRun(cycle, entries);
     try {
       const result = await executePayrollRun({
         strategy: "sequential",
-        deps: createMockDeps(),
+        deps,
         token: addrSTRK,
         entries,
         recipients,
@@ -147,7 +161,9 @@ export default function EmployerPage() {
       } else {
         finishRun(runId, result.txHashes);
         setRunNote(
-          `${result.results.length} recipients paid in ${result.txHashes.length} tx · ${result.totalMs} ms · MOCK transport (no wallet connected).`
+          `${result.results.length} recipients paid in ${result.txHashes.length} tx · ${result.totalMs} ms · ${
+            networkLive ? "wallet-signed" : "MOCK transport"
+          }.`
         );
       }
     } catch {
@@ -175,11 +191,8 @@ export default function EmployerPage() {
           </div>
         </div>
 
-        {mockMode && (
-          <div className={styles.mockBanner}>
-            MOCK MODE — no wallet connected. Channel state is in-memory only
-            and never touches the pool. Connect a Ready wallet to verify.
-          </div>
+        {!connected && (
+          <ConnectGate message="Guest view — read everything, sign nothing. Adding channels and running payroll need the employer's wallet." />
         )}
 
         {/* Stats */}
@@ -229,6 +242,8 @@ export default function EmployerPage() {
                   {c.state === "pending_registration" && (
                     <button
                       className={styles.miniBtn}
+                      disabled={!connected}
+                      title={!connected ? "Connect the employer wallet to sign" : undefined}
                       onClick={() => handleActivate(c.id)}
                     >
                       Activate
@@ -237,6 +252,8 @@ export default function EmployerPage() {
                   {c.state === "active" && (
                     <button
                       className={styles.miniBtn}
+                      disabled={!connected}
+                      title={!connected ? "Connect the employer wallet to sign" : undefined}
                       onClick={() => handleTerminate(c.id)}
                     >
                       Terminate
@@ -253,12 +270,12 @@ export default function EmployerPage() {
           <h2 className={styles.sectionTitle}>Run history</h2>
           <button
             className={styles.sectionAction}
-            disabled={active.length === 0 || running}
-            style={{
-              opacity: active.length === 0 || running ? 0.4 : 1,
-              cursor: active.length === 0 || running ? "not-allowed" : "pointer",
-              background: "transparent",
-            }}
+            disabled={!connected || active.length === 0 || running}
+            title={
+              !connected
+                ? "Connect the employer wallet to sign a payroll run"
+                : undefined
+            }
             onClick={handleExecuteRun}
           >
             {running ? "Running…" : "▶ Execute run"}
@@ -272,7 +289,7 @@ export default function EmployerPage() {
         )}
 
         {chainErr && (
-          <div className={styles.mockBanner} style={{ marginBottom: 12, color: "var(--accent)" }}>
+          <div className={styles.mockBanner} style={{ marginBottom: 12, color: "var(--bad)" }}>
             ON-CHAIN WRITE REJECTED — {chainErr} The channel still stands locally.
           </div>
         )}
@@ -300,7 +317,15 @@ export default function EmployerPage() {
             {runs.map((r) => (
               <div key={r.id} className={styles.runRow}>
                 <span className={styles.runCycle}>{r.cycle}</span>
-                <span className={`${styles.runStatus} ${r.status === "confirmed" ? styles.runStatusConfirmed : ""}`}>
+                <span
+                  className={`${styles.runStatus} ${
+                    r.status === "confirmed"
+                      ? styles.runStatusConfirmed
+                      : r.status === "failed"
+                        ? styles.runStatusFailed
+                        : ""
+                  }`}
+                >
                   {r.status} · {r.entries.length} recipients
                 </span>
                 <span className={styles.runTxs}>
@@ -323,7 +348,7 @@ export default function EmployerPage() {
               placeholder="0x…"
               spellCheck={false}
             />
-            {addrError && <div className={styles.fieldHint} style={{ color: "var(--accent)" }}>{addrError}</div>}
+            {addrError && <div className={styles.fieldHint} style={{ color: "var(--bad)" }}>{addrError}</div>}
           </div>
           <div className={styles.field}>
             <label className={styles.fieldLabel}>Local label (memory only, never persisted)</label>
@@ -334,21 +359,14 @@ export default function EmployerPage() {
               placeholder="e.g. Engineering — A"
             />
           </div>
-          <button type="submit" style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 13,
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            fontWeight: 600,
-            background: "var(--accent)",
-            border: "1px solid var(--accent)",
-            borderRadius: "var(--radius-btn)",
-            color: "var(--text)",
-            padding: "12px 24px",
-            cursor: "pointer",
-          }}>
+          <button type="submit" className={styles.submitBtn} disabled={!connected}>
             Add channel
           </button>
+          {!connected && (
+            <div className={styles.fieldHint}>
+              Connect the employer wallet to add a channel — guests cannot write.
+            </div>
+          )}
         </form>
       </main>
     </div>
