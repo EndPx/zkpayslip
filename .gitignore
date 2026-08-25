@@ -3,6 +3,9 @@ AGENTS.md
 
 # Local agent session state
 .zcode/
+.omc/
+.playwright-mcp/
+home-guest.png
 
 # Dependencies
 node_modules/
@@ -48,4 +51,3 @@ yarn.lock
 
 # Cairo build artifacts
 cairo/target/
-.playwright-mcp/
