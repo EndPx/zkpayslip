@@ -7,22 +7,29 @@ import { useEmployer } from "@/lib/employer/store";
 import { addChannelOnChain, explainRevert } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
 import AppNav from "../components/AppNav";
+import ConnectGate, { useIsConnected } from "../components/ConnectGate";
 
 export default function InvitePage() {
-  const { addChannel, pendingChannels, mockMode } = useEmployer();
+  const { addChannel, pendingChannels } = useEmployer();
   const [newAddr, setNewAddr] = useState("");
   const [newLabel, setNewLabel] = useState("");
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chainTx, setChainTx] = useState<string | null>(null);
 
-  // add_channel is owner-only on-chain; without a wallet the invite stays local.
+  // add_channel is owner-only on-chain: without the employer wallet there is
+  // nothing to sign, so this surface is a guest read-only view.
   const myWalletAccount = useStoreWallet((s) => s.myWalletAccount);
+  const connected = useIsConnected();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setChainTx(null);
+    if (!connected || !myWalletAccount) {
+      setError("Connect the employer wallet to add a channel.");
+      return;
+    }
     const addr = newAddr.trim();
     if (!/^0x[0-9a-fA-F]{8,}$/.test(addr)) {
       setError("Enter a valid Starknet address (0x…).");
@@ -59,10 +66,8 @@ export default function InvitePage() {
           Until then the channel stays <em>pending registration</em>.
         </p>
 
-        {mockMode && (
-          <div className={styles.mockBanner}>
-            MOCK MODE — channel is held in memory only; no on-chain state.
-          </div>
+        {!connected && (
+          <ConnectGate message="Guest view — the invite flow needs the employer wallet: add_channel is an owner-only signed transaction." />
         )}
 
         {/* Onboarding note: registration-first protocol fact */}
@@ -92,7 +97,7 @@ export default function InvitePage() {
               placeholder="0x…"
               spellCheck={false}
             />
-            {error && <div className={styles.fieldHint} style={{ color: "var(--accent)" }}>{error}</div>}
+            {error && <div className={styles.fieldHint} style={{ color: "var(--bad)" }}>{error}</div>}
           </div>
           <div className={styles.field}>
             <label className={styles.fieldLabel}>Local label (memory only, never persisted)</label>
@@ -107,23 +112,16 @@ export default function InvitePage() {
               or written to storage.
             </div>
           </div>
-          <button type="submit" style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 13,
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            fontWeight: 600,
-            background: "var(--accent)",
-            border: "1px solid var(--accent)",
-            borderRadius: "var(--radius-btn)",
-            color: "var(--text)",
-            padding: "12px 24px",
-            cursor: "pointer",
-          }}>
+          <button
+            type="submit"
+            className={styles.submitBtn}
+            disabled={!connected}
+            title={!connected ? "Connect the employer wallet to sign" : undefined}
+          >
             Add channel
           </button>
           {done && (
-            <div className={styles.fieldHint} style={{ color: "var(--accent)", marginTop: 10 }}>
+            <div className={styles.fieldHint} style={{ color: "var(--ok)", marginTop: 10 }}>
               ✓ Channel added — waiting for registration
             </div>
           )}
