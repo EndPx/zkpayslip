@@ -6,6 +6,7 @@ import styles from "../uni.module.css";
 import * as constants from "@/utils/constants";
 import { useStoreWallet } from "../components/Wallet/walletContext";
 import { useFrontendProvider } from "../components/client/provider/providerContext";
+import AppNav from "../components/AppNav";
 import { executePayrollRun, createMockDeps, createWalletDeps } from "@/lib/payroll";
 import type { StrategyName } from "@/lib/payroll";
 
@@ -139,7 +140,10 @@ export default function BenchPage() {
   }
 
   return (
-    <div className={styles.panel} style={{ maxWidth: 780, margin: "48px auto" }}>
+    <div className={styles.page}>
+      <AppNav active="/bench" />
+      <main className={styles.main}>
+        <div className={styles.panel}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2 style={{ margin: 0, fontFamily: "var(--font-display)", textTransform: "uppercase", letterSpacing: "-0.02em" }}>
           Batch benchmark
@@ -165,7 +169,7 @@ export default function BenchPage() {
           : "MOCK MODE — no wallet connected. Hashes are fake (MOCK_*) and numbers are simulated. Connect a wallet on Mainnet or Sepolia for real measurements."}
       </div>
 
-      <label style={{ display: "block", fontSize: 13, color: "#9aa4b2", marginBottom: 4 }}>
+      <label style={{ display: "block", fontSize: 13, color: "var(--text-dim)", marginBottom: 4 }}>
         Recipient addresses (JSON array; every recipient must be registered in the pool)
       </label>
       <textarea
@@ -293,6 +297,8 @@ export default function BenchPage() {
           </button>
         </>
       )}
+        </div>
+      </main>
     </div>
   );
 }
