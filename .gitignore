@@ -51,3 +51,6 @@ yarn.lock
 
 # Cairo build artifacts
 cairo/target/
+
+# Windows crash dumps
+bash.exe.stackdump
