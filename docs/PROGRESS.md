@@ -31,6 +31,12 @@ sits over the frame.
 
 - Grammar: hero-on-black openings and an editorial index instead of card
   grids — home's role doors are now numbered rows behind hairline rules.
+- Landing and app split (2026-08-26, user-directed): `/` is now an animated
+  explainer — floating proof token in the hero, three scroll-triggered
+  stages (pool masking, proof burn, ECDH handshake) — and the console lives
+  at `/app` behind "Open the app". All motion is CSS plus one
+  IntersectionObserver; verified in the browser and by production build
+  (10/10 routes) on 2026-08-26.
 - One accent per view: gold interactive, pale-gold success, red burn only.
 - Verified by a guest walkthrough of all seven routes in the browser
   (`/`, `/employer`, `/employee`, `/invite`, `/verify`, `/about`, `/bench`)
