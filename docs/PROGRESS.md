@@ -19,6 +19,28 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | 9 — Mainnet deployment | DEFERRED | Naturally last; runbook + demo video shot list in `DEFERRED.md`. |
 | 10 — Documentation | DONE | README per spec, FINDINGS finalized to extent facts exist, PROGRESS current. Benchmark numbers PENDING. |
 
+## Ember & bone redesign — 2026-08-26
+
+The Morpho-blue console read as generic dark fintech, so the direction was
+re-decided first (taste discipline: name the genre before styling): angelcore
+adapted to a ledger. Near-black void `#05060a`, bone-white `#f4f1ea` type,
+one warm light — gold `#ffb24d` owns every interactive element; red `#ff2a2a`
+survives only where something burns or fails. Fraunces serif carries display,
+Inter keeps UI legible, IBM Plex Mono keeps the chain's numbers; film grain
+sits over the frame.
+
+- Grammar: hero-on-black openings and an editorial index instead of card
+  grids — home's role doors are now numbered rows behind hairline rules.
+- One accent per view: gold interactive, pale-gold success, red burn only.
+- Verified by a guest walkthrough of all seven routes in the browser
+  (`/`, `/employer`, `/employee`, `/invite`, `/verify`, `/about`, `/bench`)
+  plus typecheck + production build on 2026-08-26. Console clean apart from
+  dev-only HMR preload noise.
+- Found and fixed during the walkthrough: the /about schematic caption ran
+  into the VALID ONCE seal at the card edge.
+- Still true from the 08-24 pass: no browser wallet has signed anything —
+  the write paths remain UNVERIFIED until Step 1 connects one.
+
 ## Console redesign — 2026-08-24
 
 - Direction: Morpho-grade dark console — blue-tinted near-black canvas
