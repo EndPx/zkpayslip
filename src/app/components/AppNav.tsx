@@ -18,6 +18,7 @@ import SelectWallet from "./client/WalletHandle/SelectWallet";
  */
 
 const LINKS = [
+  { href: "/app", label: "App" },
   { href: "/employer", label: "Employer" },
   { href: "/invite", label: "Invite" },
   { href: "/employee", label: "Employee" },
