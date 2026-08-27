@@ -9,14 +9,27 @@ export const addrSTRK = "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab0720185
 // Frontend RPC providers, indexed. The STRK20 privacy pool lives on Mainnet (0)
 // and Sepolia (2); index 1 is a spare public testnet endpoint. NEXT_PUBLIC_PROVIDER_URL
 // is your Alchemy key (see .env.example).
+//
+// Graceful degradation: with no Alchemy key set (public deployments), the
+// Alchemy slots fall back to keyless public nodes instead of constructing
+// providers with garbage URLs — wallet connect keeps working for visitors
+// who never see our env.
+const ALCHEMY_KEY = process.env.NEXT_PUBLIC_PROVIDER_URL;
+const MAINNET_RPC = ALCHEMY_KEY
+    ? "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_10/" + ALCHEMY_KEY
+    : "https://rpc.starknet.lava.build";
+const SEPOLIA_RPC = ALCHEMY_KEY
+    ? "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_10/" + ALCHEMY_KEY
+    : "https://starknet-sepolia-rpc.publicnode.com";
+
 export const myFrontendProviders: ProviderInterface[] = [
-    new RpcProvider({ nodeUrl: "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_10/" + process.env.NEXT_PUBLIC_PROVIDER_URL }),
+    new RpcProvider({ nodeUrl: MAINNET_RPC }),
     // Index 1 — keyless public Sepolia node, the fallback when no Alchemy key is
     // set. This slot used to hold a Blast API URL; Blast is decommissioned and
     // now answers every request with "no longer available" (see docs/FINDINGS.md),
     // so it was a dead endpoint pretending to be a spare.
     new RpcProvider({ nodeUrl: "https://starknet-sepolia-rpc.publicnode.com" }),
-    new RpcProvider({ nodeUrl: "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_10/" + process.env.NEXT_PUBLIC_PROVIDER_URL })];
+    new RpcProvider({ nodeUrl: SEPOLIA_RPC })];
 
 // ─── Example anonymizer (echo helper) ───────────────────────────────────────
 // DEMO CONTRACT: StrkInvokeHelper (cairo/src/lib.cairo) just round-trips STRK
