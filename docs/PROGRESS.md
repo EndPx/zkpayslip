@@ -19,6 +19,19 @@ DEFERRED (needs the developer's wallet — see `DEFERRED.md`) · UNVERIFIED
 | 9 — Mainnet deployment | DEFERRED | Naturally last; runbook + demo video shot list in `DEFERRED.md`. |
 | 10 — Documentation | DONE | README per spec, FINDINGS finalized to extent facts exist, PROGRESS current. Benchmark numbers PENDING. |
 
+## Production deployment — 2026-08-27
+
+- **Live at https://zkpayslip.vercel.app** (Vercel, production alias). Set as
+  `demo_url` in `strk20.json` and as the repository Website field — the hub
+  auto-detects it from there.
+- Verified from the public URL: `/verify?id=0x43` reads the real Sepolia
+  contract and shows **VALID** with the Sepolia badge and the opaque fact
+  hash — no wallet, no env vars, keyless RPC fallbacks working as designed.
+- RPC resilience shipped the same day: with no Alchemy key present, the
+  wallet-connect providers fall back to public nodes (lava for mainnet,
+  publicnode for Sepolia) instead of building providers with garbage URLs.
+- Production build: 11/11 routes, typecheck clean.
+
 ## Ember & bone redesign — 2026-08-26
 
 The Morpho-blue console read as generic dark fintech, so the direction was
