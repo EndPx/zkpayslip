@@ -411,6 +411,15 @@
   color: var(--accent);
 }
 
+/* On-chain lookup card — read-only, works without a wallet */
+.onchainCard {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 20px 22px;
+  margin-bottom: 32px;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .stats {

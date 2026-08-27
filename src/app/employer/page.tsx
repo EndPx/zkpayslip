@@ -11,6 +11,7 @@ import {
   terminateChannelOnChain,
   explainRevert,
 } from "@/lib/contract/writes";
+import { getChannelOnChain } from "@/lib/contract/sepolia";
 import { useStoreWallet } from "../components/Wallet/walletContext";
 import { addrSTRK, myFrontendProviders, Strk20Networks } from "@/utils/constants";
 import AppNav from "../components/AppNav";
@@ -215,6 +216,9 @@ export default function EmployerPage() {
           </div>
         </div>
 
+        {/* On-chain channel lookup — read-only, no wallet needed */}
+        <OnChainLookup />
+
         {/* Channels */}
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Employee channels</h2>
@@ -369,6 +373,82 @@ export default function EmployerPage() {
           )}
         </form>
       </main>
+    </div>
+  );
+}
+
+const CHAIN_STATE_LABEL: Record<string, string> = {
+  "0": "pending registration",
+  "1": "active",
+  "2": "terminated",
+};
+
+/**
+ * Read-only channel lookup against the deployed Sepolia contract.
+ *
+ * Guests can use it too — reads never need a wallet. The channel id is the
+ * exact felt the channel was created with (the UI derives and shows it at
+ * add time); anything unparseable just reports not found.
+ */
+function OnChainLookup() {
+  const [id, setId] = useState("");
+  const [state, setState] = useState<"idle" | "loading" | "found" | "missing" | "error">("idle");
+  const [result, setResult] = useState<{ recipient: string; state: string; createdAt: number } | null>(null);
+
+  async function lookup() {
+    if (!id.trim()) return;
+    setState("loading");
+    const r = await getChannelOnChain(id.trim());
+    if (r) {
+      setResult(r);
+      setState("found");
+    } else {
+      setResult(null);
+      setState("missing");
+    }
+  }
+
+  return (
+    <div className={styles.onchainCard}>
+      <div className={styles.sectionTitle} style={{ marginBottom: 12 }}>
+        On-chain channel lookup
+      </div>
+      <div className={styles.unshieldBlock ?? ""} style={{ display: "flex", gap: 10 }}>
+        <input
+          className={styles.fieldInput}
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          placeholder="0x… channel id"
+          spellCheck={false}
+          style={{ flex: 1 }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") lookup();
+          }}
+        />
+        <button className={styles.miniBtn} style={{ padding: "10px 18px" }} onClick={lookup} disabled={state === "loading"}>
+          {state === "loading" ? "Reading…" : "Read chain"}
+        </button>
+      </div>
+      {state === "found" && result && (
+        <div className={styles.fieldHint} style={{ color: "var(--text-dim)", marginTop: 10 }}>
+          recipient <span style={{ color: "var(--text)" }}>{shortAddr(result.recipient)}</span>
+          {" · state "}
+          <span style={{ color: "var(--accent)" }}>
+            {CHAIN_STATE_LABEL[result.state] ?? result.state}
+          </span>
+          {result.createdAt > 0 && <> · created {new Date(result.createdAt * 1000).toISOString().slice(0, 10)}</>}
+        </div>
+      )}
+      {state === "missing" && (
+        <div className={styles.fieldHint} style={{ marginTop: 10 }}>
+          No channel with that id on Sepolia.
+        </div>
+      )}
+      {state === "error" && (
+        <div className={styles.fieldHint} style={{ color: "var(--accent)", marginTop: 10 }}>
+          Node unreachable — try again shortly.
+        </div>
+      )}
     </div>
   );
 }
