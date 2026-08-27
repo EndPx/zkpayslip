@@ -73,7 +73,8 @@ sits over the frame.
 | Employee portal flows | mock wallet only | UNVERIFIED |
 | Disclosure lifecycle, contract level | `scripts/verify-sepolia.mjs`, 8/8 PASS against deployed Sepolia contract | **VERIFIED on-chain 2026-08-17** |
 | Channel lifecycle, contract level | same run — add → pending, activate → active, duplicate add reverts | **VERIFIED on-chain 2026-08-17** |
-| Verifier page read path | reads `check_disclosure` via read-only RPC, no wallet | VERIFIED (falls back to mock only when the node is unreachable, and says so) |
+| Verifier page read path | Browser check of on-chain disclosures `0x42`/`0x43` (created via deployer): VALID → redeem → ALREADY_REDEEMED, Sepolia badge shown; opaque fact hash rendered, never a fabricated sentence | **VERIFIED on-chain 2026-08-17** (see FINDINGS "Verifier surface") |
+| Employer on-chain channel lookup | Browser lookup of channel `0x77` (added + activated via deployer): recipient, state active, created date read live via read-only RPC, no wallet | **VERIFIED on-chain 2026-08-17** — txs `0x048c08…fe13`, `0x02c1e9…539c` |
 | Disclosure/redeem *from the browser* | write path built (`src/lib/contract/writes.ts`); typecheck + production build clean; no browser wallet has signed one | UNVERIFIED — needs Step 1 wallet connect |
 | Channel writes *from the browser* | same module; owner-only reverts mapped to readable errors | UNVERIFIED — needs Step 1 wallet connect |
 | Dead RPC endpoint | Blast API decommissioned on both TLDs; replaced with publicnode | FIXED 2026-08-17 |
