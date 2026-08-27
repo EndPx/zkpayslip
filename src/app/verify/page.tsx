@@ -51,6 +51,13 @@ function verdictSymbol(v: string): string {
 }
 
 function fmtFact(d: DisclosureToken): string {
+  // An on-chain disclosure carries an opaque fact hash. Rendering a number
+  // for it would be fabrication; the hash is the honest fact identifier.
+  const anyFact = d.fact as any;
+  if (anyFact?.kind === "opaque") {
+    const h: string = anyFact.hash ?? "0x0";
+    return `FACT HASH ${h.slice(0, 14)}…${h.slice(-6)}`;
+  }
   if (d.fact.kind === "threshold_met") {
     return `Income ≥ ${(Number(d.fact.threshold) / 1e18).toFixed(1)} STRK / cycle`;
   }
@@ -126,7 +133,9 @@ function VerifyInner() {
         if (detail) {
           setRevealedFact({
             id,
-            fact: { kind: "threshold_met", threshold: 0n, from: 0, to: 0 },
+            // The on-chain fact is an opaque hash — the UI must render the
+            // hash itself, never a fabricated sentence about it.
+            fact: { kind: "opaque", hash: detail.factHash } as any,
             verifierAddress: detail.verifier,
             expiresAt: detail.expiresAt,
             nullifier: detail.nullifier,
