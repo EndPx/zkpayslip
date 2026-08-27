@@ -80,6 +80,36 @@ local VM. **8/8 checks passed** against
 These are **Sepolia** hashes. They do not count toward the three mainnet
 pool-touching transactions the submission gate requires.
 
+## Verifier surface verified against the live contract (2026-08-17)
+
+The `/verify` page — the surface a bank actually uses — was exercised in a
+real browser against the deployed Sepolia contract. Checks ran with **no
+wallet installed on the page**: the verdict comes from a read-only
+`starknet_call` over public RPC, which is the product claim working as
+designed.
+
+| Step | Action | Result |
+| --- | --- | --- |
+| 1 | `create_disclosure(id=0x42)` via deployer account | tx `0x02eb2428d086e7368b197b406aef0e0de19001b73903f443dc30fc8485f1dab6` |
+| 2 | Browser: check `0x42` on `/verify` | **VALID** · source badge "Sepolia" · opaque fact hash rendered honestly |
+| 3 | `redeem_disclosure(0x42)` via deployer account | tx `0x01433562a2b3842cab793685dea9205a97168764b7781214980ae31238a5fb49` |
+| 4 | Browser: re-check `0x42` | **ALREADY_REDEEMED** — "the nullifier is burned" |
+| 5 | `redeem_disclosure(0x42)` again (negative test) | **reverted** with contract error `'REDEEMED'` — the one-time guarantee holds on-chain |
+| 6 | `create_disclosure(id=0x43)` for the live-valid state | tx `0x00ef85ef1ebcb33b33b6007a069cd9096b9d6a0ea8f5dabf0912d26088b8568e` |
+| 7 | Browser: check `0x43` | **VALID** with `FACT HASH 0x5354…433` + verifier address shown |
+
+Notes worth keeping:
+
+- The page renders the on-chain fact as an **opaque hash**, never as an
+  invented sentence about it — the chain stores `fact_hash`; the human
+  sentence lives in the proof bundle the verifier receives alongside.
+- Redemption from the page is a signed transaction and stays disabled until
+  the verifier connects a wallet; checking never needs one. This is the
+  "no wallet to read" claim, enforced in UI.
+- A network failure surfaces as `UNREACHABLE` ("we could not check"), never
+  as "no such proof" — reporting a transport failure as an absent proof
+  would lie to a verifier.
+
 ## Tooling gotchas worth publishing (2026-08-17)
 
 Three cost us time; all three are cheap for another team to avoid.
