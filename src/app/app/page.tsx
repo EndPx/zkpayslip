@@ -19,6 +19,7 @@ export default function Page() {
 
       <main className={styles.shell}>
         <div className={styles.rail}>
+          <h1 className={styles.railHeading}>Console</h1>
           <BalanceCard />
           <div className={styles.panel}>
             <div className={styles.inputLabel}>Network</div>

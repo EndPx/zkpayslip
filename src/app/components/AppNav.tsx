@@ -28,7 +28,14 @@ export default function AppNav({ active }: { active?: string }) {
   return (
     <nav className={styles.nav}>
       <a className={styles.brand} href="/">
-        <span className={styles.brandMark}>zk</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/Images/brand/logo-mark.png"
+          alt=""
+          width={30}
+          height={30}
+          style={{ borderRadius: 6, objectFit: "cover" }}
+        />
         <span className={styles.brandName}>Payslip</span>
       </a>
 

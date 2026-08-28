@@ -183,6 +183,7 @@ export default function EmployerPage() {
       <main className={`${u.shell} ${u.shellWide}`}>
         {/* ── Left rail: what the treasury looks like ── */}
         <div className={u.rail}>
+          <h1 className={u.railHeading}>Employer</h1>
           <div className={u.panel}>
             <div className={u.inputLabel}>Shielded treasury</div>
             <div className={u.bigValue} style={{ fontSize: 44 }}>
@@ -424,8 +425,12 @@ function OnChainLookup() {
 
   return (
     <div className={styles.onchainCard}>
-      <div className={styles.sectionTitle} style={{ marginBottom: 12 }}>
+      <div className={styles.sectionTitle} style={{ marginBottom: 6 }}>
         On-chain channel lookup
+      </div>
+      <div className={styles.fieldHint} style={{ marginBottom: 12 }}>
+        Reads a channel straight from the Sepolia contract — live proof this
+        dashboard talks to the chain. No wallet needed; anyone can check.
       </div>
       <div className={styles.unshieldBlock ?? ""} style={{ display: "flex", gap: 10 }}>
         <input
