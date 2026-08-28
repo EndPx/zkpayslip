@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import AppNav from "./components/AppNav";
 import styles from "./landing.module.css";
 
 /**
@@ -48,13 +47,55 @@ const LINE = "#1d2029";
 const CARD = "#0a0c12";
 const RED = "#ff2a2a";
 
+/** FAQ copy — every answer bounded by what the protocol actually does. */
+const FAQS: [string, string][] = [
+  [
+    "Can my employer see my balance?",
+    "No. Pool notes decrypt only with your viewing key, which never leaves your wallet — not even this application sees it. Your employer sees their own treasury, never yours.",
+  ],
+  [
+    "Can a verifier reuse or forward my proof?",
+    "Redemption is single-use and bound to one verifier address; a second attempt fails on-chain. What a legitimate verifier retains after reading it is inherent to any disclosure — we say that plainly rather than overclaim.",
+  ],
+  [
+    "Is this a mixer?",
+    "No. STRK20 is a note-based pool with on-chain STARK proof verification and mandatory deposit screening, enforced by the protocol itself. Private from the public — not from lawful oversight.",
+  ],
+  [
+    "What stays public?",
+    "The edges: that the pool is used, when, and the amounts that enter or leave it. What disappears is who paid whom, how much per person, and which notes were spent.",
+  ],
+  [
+    "Does checking a proof need a wallet?",
+    "No — anyone can run the read-only check against the chain. Only burning the nullifier needs a signature, and the contract accepts it from the verifier's address alone.",
+  ],
+];
+
 export default function Landing() {
   return (
     <div className={styles.landing}>
-      <AppNav />
+      {/* Landing header — brand plus one door. The product surfaces live
+          inside the app; this page sells the idea, it does not navigate. */}
+      <header className={styles.topBar}>
+        <div className={`${styles.wrap} ${styles.topBarInner}`}>
+          <a className={styles.brand} href="/">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className={styles.brandLogo} src="/Images/brand/logo-mark.png" alt="" />
+            <span className={styles.brandName}>Payslip</span>
+          </a>
+          <a className={styles.btnGold} href="/app">
+            Open the app
+          </a>
+        </div>
+      </header>
 
       {/* ─── Hero: one floating object in the void ─────────────────── */}
       <header className={styles.wrap}>
+        {/* The void texture — gold dust rising under the whole hero. */}
+        <div className={styles.heroVoid} aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/Images/brand/hero-void.jpg" alt="" />
+        </div>
         <div className={styles.hero}>
           <div>
             <div className={styles.kicker}>Private payroll on Starknet</div>
@@ -302,6 +343,94 @@ export default function Landing() {
               </text>
             </svg>
           </Stage>
+        </div>
+      </section>
+
+      {/* ─── For whom — three doors, mostly picture ───────────────── */}
+      <section className={styles.section}>
+        <div className={styles.wrap}>
+          <div className={styles.sectionHead}>
+            <div className={styles.kicker}>For whom</div>
+            <h2>
+              Three roles. <em>One</em> dark rail.
+            </h2>
+          </div>
+
+          {/* The mask illustration carries the section — text stays one line per role. */}
+          <div className={styles.forVisual} aria-hidden>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/Images/brand/stage-mask.png" alt="" loading="lazy" />
+            <div className={styles.forVisualCap}>SALARIES IN · WHO WAS PAID, OUT</div>
+          </div>
+
+          <div className={styles.forGrid}>
+            <a className={styles.forCard} href="/employer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+                <path d="M3 21h18" />
+                <path d="M5 21V7l7-4 7 4v14" />
+                <path d="M9 21v-6h6v6" />
+              </svg>
+              <div>
+                <div className={styles.forWho}>For employers</div>
+                <div className={styles.forLine}>Run payroll no ledger can read.</div>
+              </div>
+            </a>
+            <a className={styles.forCard} href="/employee">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+                <rect x="4" y="10" width="16" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                <circle cx="12" cy="15" r="1.6" />
+              </svg>
+              <div>
+                <div className={styles.forWho}>For employees</div>
+                <div className={styles.forLine}>Own your salary — prove it once.</div>
+              </div>
+            </a>
+            <a className={styles.forCard} href="/verify">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+                <circle cx="11" cy="11" r="7" />
+                <path d="M21 21l-4.3-4.3" />
+                <path d="M8.5 11l2 2 4-4" />
+              </svg>
+              <div>
+                <div className={styles.forWho}>For verifiers</div>
+                <div className={styles.forLine}>One check, no wallet, nothing else.</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ — asked, answered ────────────────────────────────── */}
+      <section className={styles.section}>
+        <div className={styles.wrap}>
+          <div className={styles.faqGrid}>
+            <div className={styles.faqSide}>
+              <div className={styles.kicker}>Common questions</div>
+              <h2>
+                Asked,
+                <br />
+                <em>answered.</em>
+              </h2>
+              {/* The engraved proof emblem — the section's picture. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className={styles.faqEmblem}
+                src="/Images/brand/proof-emblem.png"
+                alt=""
+                loading="lazy"
+              />
+            </div>
+
+            <div className={styles.faqList}>
+              {FAQS.map(([q, a]) => (
+                <details key={q} className={styles.qa}>
+                  <summary>{q}</summary>
+                  <p className={styles.answer}>{a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
