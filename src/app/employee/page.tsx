@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "./employee.module.css";
+import u from "../uni.module.css";
 import { useEmployee } from "@/lib/employee/store";
 import {
   createDisclosureOnChain,
@@ -124,18 +125,12 @@ export default function EmployeePage() {
     <div className={styles.page}>
       <AppNav active="/employee" />
 
-      <main className={styles.main}>
-        <div className={styles.tag}>Employee portal</div>
-        <h1 className={styles.h1}>Your shielded salary.</h1>
-        <p className={styles.sub}>
-          See your shielded balance, pay-period history, unshield to a public
-          address, and generate a one-time income proof for a verifier.
-        </p>
-
+      <main className={u.shell}>
+        {/* Left rail: what you have. */}
+        <div className={u.rail}>
         {!connected && (
-          <ConnectGate message="Guest view — your shielded balance, pay history, and proofs are only readable with your own wallet." />
+          <ConnectGate message="Balance, history, and proofs read only through your own wallet." />
         )}
-
         {/* Shielded balance — a guest sees the structure, not a number. */}
         <div className={styles.balanceCard}>
           <div className={styles.balanceLabel}>Shielded balance</div>
@@ -150,6 +145,10 @@ export default function EmployeePage() {
           </div>
         </div>
 
+        </div>
+
+        {/* Right column: what you can do. */}
+        <div className={`${u.actionCol} ${u.listCap}`}>
         {/* Pay history */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Pay-period history</h2>
@@ -284,9 +283,12 @@ export default function EmployeePage() {
           )}
         </div>
 
-        {/* Demo tools — clearly synthetic, for the demo video only. Nothing
-            here touches the chain or pretends to be live state. */}
-        <details style={{ marginBottom: 8 }}>
+        </div>
+      </main>
+
+      {/* Demo tools docked below the fold-independent — kept out of the shell
+          so the dashboard itself never scrolls. */}
+      <details style={{ margin: "0 auto 18px", maxWidth: "var(--max-w)", padding: "0 var(--gutter)" }}>
           <summary
             style={{
               cursor: "pointer",
@@ -303,7 +305,6 @@ export default function EmployeePage() {
             </button>
           </div>
         </details>
-      </main>
     </div>
   );
 }
