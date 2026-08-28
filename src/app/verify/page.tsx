@@ -247,7 +247,7 @@ function VerifyInner() {
               marginBottom: 8,
             }}
           >
-            Proof id
+            ① Check — anyone, no wallet
           </label>
           <input
             className={styles.unshieldInput}
@@ -264,6 +264,19 @@ function VerifyInner() {
           >
             {checking ? "Checking…" : "Check proof"}
           </button>
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              color: "var(--text-faint)",
+              marginTop: 14,
+              maxWidth: "46ch",
+              lineHeight: 1.6,
+            }}
+          >
+            ② Redeem — verifier's wallet only. Burning the nullifier is a
+            signed transaction; checking never is.
+          </div>
         </div>
 
         </div>
@@ -391,7 +404,7 @@ function VerifyInner() {
                   title={!myWalletAccount ? "Connect the verifier wallet to redeem" : undefined}
                   style={{ marginTop: 20 }}
                 >
-                  {redeeming ? "Burning…" : "Redeem (burn nullifier)"}
+                  {redeeming ? "② Burning…" : "② Redeem (burn nullifier)"}
                 </button>
                 {!myWalletAccount && (
                   <p
@@ -403,8 +416,9 @@ function VerifyInner() {
                       maxWidth: "58ch",
                     }}
                   >
-                    🔒 Redeeming is a signed transaction — connect the verifier
-                    wallet. Checking, as you just did, never needs one.
+                    🔒 Step ② needs the verifier's wallet signature — the
+                    contract accepts the burn from that address alone. Step ①,
+                    the check you just ran, never needed one.
                   </p>
                 )}
                 {redeemErr && (
