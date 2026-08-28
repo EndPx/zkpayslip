@@ -68,7 +68,7 @@ export default function BalanceCard() {
       <div className={styles.inputLabel}>Shielded balance</div>
       {connected ? (
         <>
-          <div className={styles.bigValue} style={{ fontSize: 52 }}>
+          <div className={styles.bigValue} style={{ fontSize: 34 }}>
             {loading && balance === null
               ? "…"
               : failed && balance === null

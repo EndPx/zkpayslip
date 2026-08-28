@@ -186,7 +186,7 @@ export default function EmployerPage() {
           <h1 className={u.railHeading}>Employer</h1>
           <div className={u.panel}>
             <div className={u.inputLabel}>Shielded treasury</div>
-            <div className={u.bigValue} style={{ fontSize: 44 }}>
+            <div className={u.bigValue} style={{ fontSize: 30 }}>
               {treasuryStrk}
             </div>
             <div className={u.subLine}>
