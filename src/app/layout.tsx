@@ -27,6 +27,33 @@ export const metadata: Metadata = {
   title: "zkPayslip — private payroll on Starknet",
   description:
     "Payroll inside the STRK20 privacy pool: nobody sees who was paid what, and any employee can still prove their income to exactly one verifier, once.",
+  icons: {
+    icon: "/Images/brand/logo-mark.png",
+    apple: "/Images/brand/logo-mark.png",
+  },
+  openGraph: {
+    title: "zkPayslip — private payroll on Starknet",
+    description:
+      "Salaries in the dark. Proof in the open — one fact, one verifier, once.",
+    url: "https://zkpayslip.vercel.app",
+    siteName: "zkPayslip",
+    images: [
+      {
+        url: "/Images/brand/og-card.png",
+        width: 1731,
+        height: 909,
+        alt: "A zkPayslip proof token: redacted payslip rows, the nullifier burning, VALID ONCE seal",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "zkPayslip — private payroll on Starknet",
+    description:
+      "Salaries in the dark. Proof in the open — one fact, one verifier, once.",
+    images: ["/Images/brand/og-card.png"],
+  },
 };
 
 export default function RootLayout({
