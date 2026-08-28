@@ -18,8 +18,8 @@ export default function Page() {
       <AppNav active="/app" />
 
       <main className={styles.shell}>
+        <h1 className={styles.railHeading}>Console</h1>
         <div className={styles.rail}>
-          <h1 className={styles.railHeading}>Console</h1>
           <BalanceCard />
           <div className={styles.panel}>
             <div className={styles.inputLabel}>Network</div>

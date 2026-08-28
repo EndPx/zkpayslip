@@ -181,9 +181,9 @@ export default function EmployerPage() {
       <AppNav active="/employer" />
 
       <main className={`${u.shell} ${u.shellWide}`}>
+        <h1 className={u.railHeading}>Employer</h1>
         {/* ── Left rail: what the treasury looks like ── */}
         <div className={u.rail}>
-          <h1 className={u.railHeading}>Employer</h1>
           <div className={u.panel}>
             <div className={u.inputLabel}>Shielded treasury</div>
             <div className={u.bigValue} style={{ fontSize: 30 }}>

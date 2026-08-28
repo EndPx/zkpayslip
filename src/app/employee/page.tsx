@@ -126,9 +126,9 @@ export default function EmployeePage() {
       <AppNav active="/employee" />
 
       <main className={u.shell}>
+        <h1 className={u.railHeading}>Employee</h1>
         {/* Left rail: what you have. */}
         <div className={u.rail}>
-          <h1 className={u.railHeading}>Employee</h1>
         {!connected && (
           <ConnectGate message="Balance, history, and proofs read only through your own wallet." />
         )}
