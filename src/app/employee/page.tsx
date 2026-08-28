@@ -219,10 +219,14 @@ export default function EmployeePage() {
             className={styles.unshieldInput}
             value={verifierAddr}
             onChange={(e) => setVerifierAddr(e.target.value)}
-            placeholder="Verifier address 0x… (only they can redeem)"
+            placeholder="Verifier address 0x…"
             spellCheck={false}
-            style={{ width: "100%", boxSizing: "border-box", marginBottom: 10 }}
+            style={{ width: "100%", boxSizing: "border-box", marginBottom: 6 }}
           />
+          <div className={styles.unshieldNote} style={{ marginBottom: 12 }}>
+            Only this wallet may ever burn the proof — anyone can still check
+            it, but a leaked link is inert.
+          </div>
           <button
             className={styles.unshieldBtn}
             onClick={handleCreateDisclosure}
