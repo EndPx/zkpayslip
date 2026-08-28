@@ -8,6 +8,7 @@ import { redeemDisclosureOnChain, explainRevert } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
 import type { DisclosureToken } from "../../../types/payroll";
 import styles from "../employee/employee.module.css";
+import u from "../uni.module.css";
 import AppNav from "../components/AppNav";
 
 /**
@@ -223,13 +224,14 @@ function VerifyInner() {
     <div className={styles.page}>
       <AppNav active="/verify" />
 
-      <main className={styles.main} style={{ maxWidth: 620 }}>
+      <main className={u.shell}>
+        {/* Left rail: what a verifier does. */}
+        <div className={u.rail}>
         <div className={styles.tag}>Verifier</div>
         <h1 className={styles.h1}>Check a proof.</h1>
         <p className={styles.sub}>
-          Paste a payslip proof id below. The verdict is a read-only check —
-          no wallet needed. A valid proof reveals its single fact; redemption
-          burns the nullifier once.
+          Paste a proof id. The verdict is a read-only chain check — no wallet
+          needed, no history, no second read.
         </p>
 
         {/* Proof input */}
@@ -264,6 +266,10 @@ function VerifyInner() {
           </button>
         </div>
 
+        </div>
+
+        {/* Right column: the verdict. */}
+        <div className={u.actionCol}>
         {/* Verdict */}
         {verdict && (
           <div
@@ -464,6 +470,7 @@ function VerifyInner() {
             </a>
           </div>
         )}
+        </div>
       </main>
     </div>
   );
