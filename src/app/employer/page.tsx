@@ -203,6 +203,40 @@ export default function EmployerPage() {
 
           <OnChainLookup />
 
+          {/* Onboarding: the protocol's registration-first fact, folded away
+              once it is known. The invite flow lives here, not on its own
+              route — add a channel below, wait for the employee's viewing
+              key, activate, then the channel joins a run. */}
+          <details className={styles.onboardingNote} style={{ padding: "16px 18px" }}>
+            <summary
+              style={{
+                cursor: "pointer",
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "var(--text-label)",
+                userSelect: "none",
+              }}
+            >
+              Onboarding — why channels start pending
+            </summary>
+            <h3>Registration precedes payment</h3>
+            <p>
+              A channel opens through ECDH: the pool derives a shared secret
+              from the recipient&apos;s <em>public viewing key</em>, which only
+              exists on-chain after the recipient runs <code>SetViewingKey</code>.
+              Without it, no note can be created — there is no
+              send-now-claim-later.
+            </p>
+            <p>
+              Employees also need a small amount of <code>STRK</code> to
+              register (their wallet pays the fee). If they have none, send
+              them public STRK first — that flow stays visible here, not
+              hidden.
+            </p>
+          </details>
+
           {!connected && (
             <ConnectGate message="Guest view — read everything, sign nothing. Writes need the employer's wallet." />
           )}
