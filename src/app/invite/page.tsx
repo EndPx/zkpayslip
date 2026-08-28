@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "../employer/employer.module.css";
+import u from "../uni.module.css";
 import { useEmployer } from "@/lib/employer/store";
 import { addChannelOnChain, explainRevert } from "@/lib/contract/writes";
 import { useStoreWallet } from "../components/Wallet/walletContext";
@@ -57,17 +58,19 @@ export default function InvitePage() {
     <div className={styles.page}>
       <AppNav active="/invite" />
 
-      <main className={styles.main}>
+      <main className={u.shell}>
+        {/* Left rail: why two phases + gate. */}
+        <div className={u.rail}>
         <div className={styles.tag}>Onboarding</div>
         <h1 className={styles.h1}>Invite employees.</h1>
         <p className={styles.sub}>
-          Add a channel for each employee. Registration must precede payment —
-          the employee registers their viewing key in their wallet first.
-          Until then the channel stays <em>pending registration</em>.
+          Add a channel per employee. Registration must precede payment —
+          until the employee registers their viewing key, the channel stays{" "}
+          <em>pending registration</em>.
         </p>
 
         {!connected && (
-          <ConnectGate message="Guest view — the invite flow needs the employer wallet: add_channel is an owner-only signed transaction." />
+          <ConnectGate message="The invite flow needs the employer wallet: add_channel is an owner-only signed transaction." />
         )}
 
         {/* Onboarding note: registration-first protocol fact */}
@@ -86,8 +89,12 @@ export default function InvitePage() {
           </p>
         </div>
 
+        </div>
+
+        {/* Right column: the form + pending list. */}
+        <div className={`${u.actionCol} ${u.listCap}`}>
         {/* Invite form */}
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={u.panel} style={{ padding: 22 }} onSubmit={handleSubmit}>
           <div className={styles.field}>
             <label className={styles.fieldLabel}>Recipient address</label>
             <input
@@ -171,6 +178,7 @@ export default function InvitePage() {
             ))}
           </div>
         )}
+        </div>
       </main>
     </div>
   );
