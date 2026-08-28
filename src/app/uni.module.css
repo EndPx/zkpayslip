@@ -95,6 +95,78 @@
   padding: 56px var(--gutter) 72px;
 }
 
+/* ─── Dashboard split shell — full viewport, no page scroll ────
+   Left rail: balance / state. Right column: the actions. The page
+   itself never scrolls on desktop; long lists scroll inside their
+   own capped boxes instead. Below 900px it stacks and scrolls
+   normally, because two columns cannot fit a phone. */
+
+.shell {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px var(--gutter) 28px;
+  min-height: 0;
+  /* 64px nav + ~46px footer — keeps everything inside one viewport. */
+  height: calc(100vh - 110px);
+}
+
+.shellWide {
+  max-width: 1400px;
+  grid-template-columns: 420px minmax(0, 1fr);
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.railTitle {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  margin-bottom: 2px;
+}
+
+.actionCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+/* A capped, internally-scrolling list — the page stays put. */
+.listCap {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1;
+  padding-right: 4px;
+}
+
+@media (max-width: 900px) {
+  .shell,
+  .shellWide {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding-bottom: 48px;
+  }
+  .listCap {
+    overflow-y: visible;
+    flex: none;
+    max-height: 420px;
+  }
+}
+
 .appTag {
   font-family: var(--font-mono);
   font-size: 11px;

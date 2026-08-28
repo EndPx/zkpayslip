@@ -3,82 +3,38 @@
 import styles from "../uni.module.css";
 import WalletAccountV6Tag from "../components/client/WalletHandle/WalletAccountV6Tag";
 import AppNav from "../components/AppNav";
+import BalanceCard from "../components/BalanceCard";
 
 /**
- * The app console, reached from the landing's "Open the app" door.
+ * The app console — one viewport, no scroll.
  *
- * It answers "who are you and what are you here to do" before it offers any
- * primitive: roles first, plumbing second — the three product surfaces lead,
- * and the raw STRK20 pool actions sit below them as setup tooling. A guest
- * can open every door from here — each surface renders read-only until a
- * wallet connects.
+ * Left rail: what you have (shielded balance, network). Right column: what
+ * you can do (the STRK20 pool actions). Roles live in the nav; this page is
+ * a dashboard, not an index.
  */
-
-const ROLES = [
-  {
-    href: "/employer",
-    label: "Employer",
-    title: "Run payroll",
-    body: "Fund a shielded treasury, keep a channel per employee, execute a cycle. Amounts stay masked until you open one channel.",
-  },
-  {
-    href: "/employee",
-    label: "Employee",
-    title: "See your salary",
-    body: "Your shielded balance and pay history, visible only to you — and a one-time income proof when a bank asks.",
-  },
-  {
-    href: "/verify",
-    label: "Verifier",
-    title: "Check a proof",
-    body: "Paste a proof id for a read-only verdict. No wallet, no history, no second read.",
-  },
-];
-
 export default function Page() {
   return (
     <div className={styles.page}>
       <AppNav active="/app" />
 
-      <main className={styles.main}>
-        <div className={styles.appTag}>Private payroll console</div>
-        <h1 className={styles.appTitle}>Run payroll in the dark.</h1>
-        <p className={styles.appSub}>
-          Salaries move invisibly inside the STRK20 privacy pool, and any
-          employee can still prove their income to exactly one verifier, once.
-          Browse everything as a guest — signing unlocks with a wallet.
-        </p>
-
-        {/* Roles — the three product surfaces, the reason anyone is here.
-            An editorial index, not a card grid: numbered rows behind
-            hairline rules, the way a ledger lists who it serves. */}
-        <div className={styles.roles}>
-          {ROLES.map((r, i) => (
-            <a key={r.href} href={r.href} className={styles.roleRow}>
-              <span className={styles.roleIndex}>{String(i + 1).padStart(2, "0")}</span>
-              <span className={styles.roleMain}>
-                <span className={styles.roleLabel}>{r.label}</span>
-                <span className={styles.roleTitle}>{r.title}</span>
-                <span className={styles.roleBody}>{r.body}</span>
+      <main className={styles.shell}>
+        <div className={styles.rail}>
+          <BalanceCard />
+          <div className={styles.panel}>
+            <div className={styles.inputLabel}>Network</div>
+            <div className={styles.subLine}>
+              <span>Starknet Sepolia / Mainnet</span>
+              <span style={{ color: "var(--accent)" }}>●</span>
+            </div>
+            <div className={styles.subLine} style={{ marginTop: 4 }}>
+              <span style={{ color: "var(--text-faint)", fontSize: 12 }}>
+                Switch network in your wallet — actions follow it.
               </span>
-              <span className={styles.roleGo} aria-hidden>
-                →
-              </span>
-            </a>
-          ))}
+            </div>
+          </div>
         </div>
 
-        {/* Pool tools — the raw STRK20 actions. Real payroll steps (an employer
-            shields the treasury; an employee unshields their pay) but plumbing,
-            not the entry point, so they sit below the roles and say so. */}
-        <div className={styles.poolTools}>
-          <div className={styles.poolLabel}>Pool tools</div>
-          <p className={styles.poolNote}>
-            Direct STRK20 actions against the pool — funding a treasury, taking
-            pay out, reading a shielded balance. The payroll surfaces above use
-            these underneath; they are exposed here for setup and for checking
-            the protocol directly.
-          </p>
+        <div className={`${styles.actionCol} ${styles.listCap}`}>
           <WalletAccountV6Tag />
         </div>
       </main>
@@ -87,7 +43,7 @@ export default function Page() {
         <div className={styles.footerInner}>
           <span>zkPayslip</span>
           <span className={styles.footerDot}>·</span>
-          <span>Hackathon build · RFP-11</span>
+          <span>RFP-11</span>
           <span className={styles.footerDot}>·</span>
           <a
             className={styles.footerLink}
@@ -96,10 +52,6 @@ export default function Page() {
             rel="noreferrer"
           >
             GitHub
-          </a>
-          <span className={styles.footerDot}>·</span>
-          <a className={styles.footerLink} href="/about">
-            How it works
           </a>
         </div>
       </footer>
