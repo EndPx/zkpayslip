@@ -22,7 +22,9 @@
 /* ─── Hero ───────────────────────────────────────────────────── */
 
 .hero {
-  min-height: calc(100vh - 64px);
+  /* One viewport on big screens, but never taller than the content
+     needs — small laptops keep everything inside the first screen. */
+  min-height: min(calc(100vh - 64px), 860px);
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
@@ -52,11 +54,13 @@
 
 .heroTitle {
   font-family: var(--font-display);
-  font-size: clamp(44px, 6.4vw, 84px);
+  /* Cap by viewport width so narrow laptops never wrap four huge lines. */
+  font-size: clamp(38px, 4.2vw, 64px);
   font-weight: 500;
-  line-height: 1.02;
+  line-height: 1.04;
   letter-spacing: -0.015em;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
+  text-wrap: balance;
 }
 
 .heroTitleEm {
