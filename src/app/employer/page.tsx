@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "./employer.module.css";
+import u from "../uni.module.css";
 import { useEmployer } from "@/lib/employer/store";
 import { executePayrollRun, createMockDeps, createWalletDeps } from "@/lib/payroll";
 import {
@@ -179,199 +180,178 @@ export default function EmployerPage() {
     <div className={styles.page}>
       <AppNav active="/employer" />
 
-      <main className={styles.main}>
-        <div className={styles.headerRow}>
-          <div className={styles.titleBlock}>
-            <div className={styles.tag}>Employer console</div>
-            <h1 className={styles.h1}>Treasury &amp; channels</h1>
-            <p className={styles.sub}>
-              Fund the treasury, add employee channels, track registration, and
-              run a payroll cycle. Amounts are masked until you open a single
-              channel.
-            </p>
-          </div>
-        </div>
-
-        {!connected && (
-          <ConnectGate message="Guest view — read everything, sign nothing. Adding channels and running payroll need the employer's wallet." />
-        )}
-
-        {/* Stats */}
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <div className={styles.statLabel}>Shielded treasury</div>
-            <div className={styles.statValue}>
-              {treasuryStrk} <span style={{ fontSize: 14, color: "var(--text-faint)" }}>STRK</span>
+      <main className={`${u.shell} ${u.shellWide}`}>
+        {/* ── Left rail: what the treasury looks like ── */}
+        <div className={u.rail}>
+          <div className={u.panel}>
+            <div className={u.inputLabel}>Shielded treasury</div>
+            <div className={u.bigValue} style={{ fontSize: 44 }}>
+              {treasuryStrk}
+            </div>
+            <div className={u.subLine}>
+              <span>STRK · inside the pool</span>
+            </div>
+            <div className={u.feeRow} style={{ borderTop: "none", borderBottom: "1px solid var(--line-subtle)", marginTop: 12, marginBottom: 0 }}>
+              <span>Active</span>
+              <span className={u.feeVal}>{active.length}</span>
+            </div>
+            <div className={u.feeRow} style={{ borderTop: "none" }}>
+              <span>Pending</span>
+              <span className={u.feeVal}>{pending.length}</span>
             </div>
           </div>
-          <div className={styles.stat}>
-            <div className={styles.statLabel}>Active channels</div>
-            <div className={styles.statValue}>{active.length}</div>
-          </div>
-          <div className={styles.stat}>
-            <div className={styles.statLabel}>Pending registration</div>
-            <div className={styles.statValue + (pending.length === 0 ? ` ${styles.statValueMuted}` : "")}>
-              {pending.length}
-            </div>
-          </div>
-        </div>
 
-        {/* On-chain channel lookup — read-only, no wallet needed */}
-        <OnChainLookup />
+          <OnChainLookup />
 
-        {/* Channels */}
-        <div className={styles.sectionHead}>
-          <h2 className={styles.sectionTitle}>Employee channels</h2>
-          <Link href="/invite" className={styles.sectionAction}>
-            + Add channel
-          </Link>
-        </div>
-
-        {channels.length === 0 ? (
-          <div className={styles.empty}>
-            No channels yet — add one from the invite page
-          </div>
-        ) : (
-          <div className={styles.channelList}>
-            {channels.map((c) => (
-              <div key={c.id} className={styles.channelRow}>
-                <div style={{ minWidth: 0 }}>
-                  <div className={styles.channelAddr}>{shortAddr(c.recipientAddress)}</div>
-                  {c.localLabel && <div className={styles.channelLabel}>{c.localLabel}</div>}
-                </div>
-                <span className={`${styles.stateChip} ${stateClass(c.state)}`}>
-                  {stateLabel(c.state)}
-                </span>
-                <div className={styles.channelActions}>
-                  {c.state === "pending_registration" && (
-                    <button
-                      className={styles.miniBtn}
-                      disabled={!connected}
-                      title={!connected ? "Connect the employer wallet to sign" : undefined}
-                      onClick={() => handleActivate(c.id)}
-                    >
-                      Activate
-                    </button>
-                  )}
-                  {c.state === "active" && (
-                    <button
-                      className={styles.miniBtn}
-                      disabled={!connected}
-                      title={!connected ? "Connect the employer wallet to sign" : undefined}
-                      onClick={() => handleTerminate(c.id)}
-                    >
-                      Terminate
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Run history */}
-        <div className={styles.sectionHead} style={{ marginTop: 8 }}>
-          <h2 className={styles.sectionTitle}>Run history</h2>
-          <button
-            className={styles.sectionAction}
-            disabled={!connected || active.length === 0 || running}
-            title={
-              !connected
-                ? "Connect the employer wallet to sign a payroll run"
-                : undefined
-            }
-            onClick={handleExecuteRun}
-          >
-            {running ? "Running…" : "▶ Execute run"}
-          </button>
-        </div>
-
-        {runNote && (
-          <div className={styles.mockBanner} style={{ marginBottom: 12 }}>
-            {runNote}
-          </div>
-        )}
-
-        {chainErr && (
-          <div className={styles.mockBanner} style={{ marginBottom: 12, color: "var(--bad)" }}>
-            ON-CHAIN WRITE REJECTED — {chainErr} The channel still stands locally.
-          </div>
-        )}
-
-        {chainTx && (
-          <div className={styles.mockBanner} style={{ marginBottom: 12, wordBreak: "break-all" }}>
-            ✓ Channel written on-chain ·{" "}
-            <a
-              href={`https://sepolia.voyager.online/tx/${chainTx}`}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: "var(--accent)" }}
-            >
-              {chainTx.slice(0, 18)}…
-            </a>
-          </div>
-        )}
-
-        {runs.length === 0 ? (
-          <div className={styles.empty}>
-            No payroll runs yet — add active channels and execute a run
-          </div>
-        ) : (
-          <div className={styles.runList}>
-            {runs.map((r) => (
-              <div key={r.id} className={styles.runRow}>
-                <span className={styles.runCycle}>{r.cycle}</span>
-                <span
-                  className={`${styles.runStatus} ${
-                    r.status === "confirmed"
-                      ? styles.runStatusConfirmed
-                      : r.status === "failed"
-                        ? styles.runStatusFailed
-                        : ""
-                  }`}
-                >
-                  {r.status} · {r.entries.length} recipients
-                </span>
-                <span className={styles.runTxs}>
-                  {r.txHashes.length > 0 ? `${r.txHashes.length} tx` : "—"}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Quick add form (also on /invite) */}
-        <form className={styles.form} style={{ marginTop: 36 }} onSubmit={handleAddChannel}>
-          <h2 className={styles.sectionTitle} style={{ marginBottom: 16 }}>Quick add</h2>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>Recipient address</label>
-            <input
-              className={styles.fieldInput}
-              value={newAddr}
-              onChange={(e) => setNewAddr(e.target.value)}
-              placeholder="0x…"
-              spellCheck={false}
-            />
-            {addrError && <div className={styles.fieldHint} style={{ color: "var(--bad)" }}>{addrError}</div>}
-          </div>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel}>Local label (memory only, never persisted)</label>
-            <input
-              className={styles.fieldInput}
-              value={newLabel}
-              onChange={(e) => setNewLabel(e.target.value)}
-              placeholder="e.g. Engineering — A"
-            />
-          </div>
-          <button type="submit" className={styles.submitBtn} disabled={!connected}>
-            Add channel
-          </button>
           {!connected && (
-            <div className={styles.fieldHint}>
-              Connect the employer wallet to add a channel — guests cannot write.
+            <ConnectGate message="Guest view — read everything, sign nothing. Writes need the employer's wallet." />
+          )}
+        </div>
+
+        {/* ── Right column: what the employer does ── */}
+        <div className={u.actionCol}>
+          {runNote && (
+            <div className={styles.mockBanner}>{runNote}</div>
+          )}
+
+          {chainErr && (
+            <div className={styles.mockBanner} style={{ color: "var(--bad)" }}>
+              ON-CHAIN WRITE REJECTED — {chainErr} The channel still stands locally.
             </div>
           )}
-        </form>
+
+          {chainTx && (
+            <div className={styles.mockBanner} style={{ wordBreak: "break-all" }}>
+              ✓ Channel written on-chain ·{" "}
+              <a
+                href={`https://sepolia.voyager.online/tx/${chainTx}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: "var(--accent)" }}
+              >
+                {chainTx.slice(0, 18)}…
+              </a>
+            </div>
+          )}
+
+          <div className={u.panel} style={{ display: "flex", flexDirection: "column", minHeight: 0, flex: 1 }}>
+            <div className={styles.sectionHead} style={{ marginBottom: 10 }}>
+              <h2 className={styles.sectionTitle}>Employee channels</h2>
+              <button
+                className={styles.sectionAction}
+                disabled={!connected || active.length === 0 || running}
+                title={!connected ? "Connect the employer wallet to sign a payroll run" : undefined}
+                onClick={handleExecuteRun}
+              >
+                {running ? "Running…" : "▶ Execute run"}
+              </button>
+            </div>
+
+            <div className={u.listCap}>
+              {channels.length === 0 ? (
+                <div className={styles.empty}>
+                  No channels yet — add one below
+                </div>
+              ) : (
+                <div className={styles.channelList}>
+                  {channels.map((c) => (
+                    <div key={c.id} className={styles.channelRow}>
+                      <div style={{ minWidth: 0 }}>
+                        <div className={styles.channelAddr}>{shortAddr(c.recipientAddress)}</div>
+                        {c.localLabel && <div className={styles.channelLabel}>{c.localLabel}</div>}
+                      </div>
+                      <span className={`${styles.stateChip} ${stateClass(c.state)}`}>
+                        {stateLabel(c.state)}
+                      </span>
+                      <div className={styles.channelActions}>
+                        {c.state === "pending_registration" && (
+                          <button
+                            className={styles.miniBtn}
+                            disabled={!connected}
+                            title={!connected ? "Connect the employer wallet to sign" : undefined}
+                            onClick={() => handleActivate(c.id)}
+                          >
+                            Activate
+                          </button>
+                        )}
+                        {c.state === "active" && (
+                          <button
+                            className={styles.miniBtn}
+                            disabled={!connected}
+                            title={!connected ? "Connect the employer wallet to sign" : undefined}
+                            onClick={() => handleTerminate(c.id)}
+                          >
+                            Terminate
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {runs.length > 0 && (
+                <>
+                  <div className={styles.sectionTitle} style={{ margin: "18px 0 8px" }}>
+                    Run history
+                  </div>
+                  <div className={styles.runList}>
+                    {runs.map((r) => (
+                      <div key={r.id} className={styles.runRow}>
+                        <span className={styles.runCycle}>{r.cycle}</span>
+                        <span
+                          className={`${styles.runStatus} ${
+                            r.status === "confirmed"
+                              ? styles.runStatusConfirmed
+                              : r.status === "failed"
+                                ? styles.runStatusFailed
+                                : ""
+                          }`}
+                        >
+                          {r.status} · {r.entries.length} recipients
+                        </span>
+                        <span className={styles.runTxs}>
+                          {r.txHashes.length > 0 ? `${r.txHashes.length} tx` : "—"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Quick add — compact, one row */}
+          <form
+            className={u.panel}
+            style={{ display: "flex", gap: 10, alignItems: "flex-end", flexWrap: "wrap" }}
+            onSubmit={handleAddChannel}
+          >
+            <div style={{ flex: "2 1 220px" }}>
+              <label className={styles.fieldLabel}>Recipient address</label>
+              <input
+                className={styles.fieldInput}
+                value={newAddr}
+                onChange={(e) => setNewAddr(e.target.value)}
+                placeholder="0x…"
+                spellCheck={false}
+              />
+              {addrError && <div className={styles.fieldHint} style={{ color: "var(--bad)" }}>{addrError}</div>}
+            </div>
+            <div style={{ flex: "1 1 140px" }}>
+              <label className={styles.fieldLabel}>Label (memory only)</label>
+              <input
+                className={styles.fieldInput}
+                value={newLabel}
+                onChange={(e) => setNewLabel(e.target.value)}
+                placeholder="Eng — A"
+              />
+            </div>
+            <button type="submit" className={styles.submitBtn} disabled={!connected}>
+              Add
+            </button>
+          </form>
+        </div>
       </main>
     </div>
   );
