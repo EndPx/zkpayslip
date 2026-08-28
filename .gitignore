@@ -54,3 +54,5 @@ cairo/target/
 
 # Windows crash dumps
 bash.exe.stackdump
+
+.vercel
