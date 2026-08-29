@@ -186,6 +186,18 @@ through the wallet. This matches the product architecture: the dapp never
 touches proving or keys — and it is itself evidence for the README's trust-
 boundary section (the proving service is a centralized off-chain component).
 
+**Final confirmation (same day):** the monorepo contains **no proving-service
+crate** — only `discovery-core` / `discovery-service` are public; the prover
+is StarkWare's centralized component and is not published. Worse for any CLI
+path: `SetViewingKey` is itself a **client action inside the proven
+transaction** (phase 0 of the batch, `sdk/src/internal/client-actions.ts`) —
+registration is not a plain Starknet transaction. Conclusion, airtight: every
+pool interaction (register, shield, transfer, unshield) requires an
+operator's proof, and the only operator doors are the wallet (Ready's built-in
+proving) or AVNU's executor. A CLI/WSL account cannot touch the pool at all.
+The Day 0 guide's `signMessage` derivation defines how the wallet derives the
+key — it does not make registration self-submittable.
+
 ## Open questions
 
 - Public proving-service rate limits are undocumented; if a multi-recipient
