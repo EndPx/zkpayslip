@@ -157,6 +157,35 @@ batch.
 **Settled recipients-per-transaction (with margin): PENDING** — will be our
 own measurement, not the RFP's figure of fifty.
 
+## SDK benchmark route: blocked on unpublished infrastructure (2026-08-28)
+
+The batch benchmark was attempted agent-side (without the developer's wallet)
+via the Privacy SDK, using self-created accounts. The route is blocked on a
+protocol-infrastructure fact, verified against every official source:
+
+- **The SDK is not on public npm** (404 for `@starkware-libs/starknet-privacy-sdk`);
+  it installs from the GitHub monorepo at a pinned commit instead. Node >= 24
+  requirement satisfied (v24.20.0 in WSL).
+- **No hosted Sepolia proving or discovery service URL is published anywhere.**
+  Checked: strk20-by-example.org (placeholder `process.env`), the starter kit
+  (no endpoints shipped — the Day 0 guide's claim that it "ships hosted Sepolia
+  endpoints" is stale), the SDK monorepo demo envs (`localhost` URLs for the
+  Sepolia profile; `TODO_MAINNET_*` for mainnet), and the e2e suite (spawns its
+  own discovery service locally against devnet or the internal integration
+  environment).
+- The services **can be self-hosted** (the monorepo ships the discovery service
+  and prover as Rust crates with Dockerfiles) — but that is a heavy
+  infrastructure build, and the Day 0 guide's warning stands: "Don't guess at
+  endpoints — a wrong proving service will fail in ways that look like your
+  bug."
+
+Consequence: the benchmark must run through the **Wallet API route** (the
+`/bench` panel with the developer's Ready wallet connected on Sepolia), where
+the wallet performs proving internally. Recipient registration also runs
+through the wallet. This matches the product architecture: the dapp never
+touches proving or keys — and it is itself evidence for the README's trust-
+boundary section (the proving service is a centralized off-chain component).
+
 ## Open questions
 
 - Public proving-service rate limits are undocumented; if a multi-recipient

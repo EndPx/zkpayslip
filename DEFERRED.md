@@ -78,36 +78,46 @@ transactions of a few STRK each satisfy the rule). Suggested split: shield
 
 ---
 
-## Step 4 — Run the batch benchmark (needs registered recipients)
+## Step 4 — Run the batch benchmark (needs your Ready wallet on Sepolia)
 
-The benchmark measures proving time / calldata / limits per recipient count.
-Proving behaviour is network-independent, so the default run is **Sepolia**
-(free via faucet); a mainnet run is optional.
+Agent-side execution was attempted and is **blocked on protocol
+infrastructure, not on tooling**: no hosted Sepolia proving/discovery service
+URL is published anywhere official (full analysis in
+`docs/FINDINGS.md` → "SDK benchmark route"), and self-hosting the prover
+stack is out of scope for the sprint. The wallet performs proving internally,
+so the benchmark runs through the **/bench panel** with your wallet connected.
 
-**What you do, in order (Sepolia default)**
+**Recommended scope — 10 recipients, not 20.** Registering recipients is the
+expensive part (each needs its own wallet, faucet funding, and a viewing-key
+registration). 2 / 5 / 10 still yields a measured curve; 20 is a bonus if the
+first three go smoothly.
 
-1. Switch Ready to **Sepolia**; fund both accounts from the Starknet Sepolia
-   faucet (`https://starknet-faucet.com` or the faucet linked in Ready).
-2. Create up to **20 extra accounts** in Ready (the bench targets 2/5/10/20
-   recipients). Fund each with a dust amount and **register every one**
-   (viewing key) — registration must precede payment; this is the Step 7b
-   "fund and register benchmark accounts" work.
-3. Open **http://localhost:3100/bench**, paste the recipient addresses as a
-   JSON array, pick `sequential`, click **Run 2** — then Run 5 / 10 / 20.
-   Switch to `batch`, set recipients-per-tx equal to the run size, repeat
-   2 / 5 / 10 / 20 until a count starts failing.
-4. Click **Copy FINDINGS markdown** and paste the block into
-   `docs/FINDINGS.md` (or just confirm and the agent files it).
+**What you do, in order**
+
+1. Switch Ready to **Sepolia**; fund the main account from the faucet
+   (`https://faucet.starknet.io` — 100 STRK per address per 24h).
+2. In Ready, create **10** sub-accounts. Give each a dust of STRK
+   (Ready can send to its own accounts) and open each once to trigger
+   **registration** (viewing key) — the pool counts registration per account.
+3. Shield ~2 STRK on the main account (the bench pays from the shielded
+   balance). One shield is enough for all runs.
+4. Open **http://localhost:3100/bench** (or the production URL), connect the
+   main account, paste the 10 recipient addresses as a JSON array.
+5. `sequential` → Run 2, Run 5, Run 10. Then `batch` (recipients-per-tx =
+   run size) → Run 2, Run 5, Run 10 — stop at whichever count fails.
+6. Click **Copy FINDINGS markdown** and send the table back.
 
 **Bring back**
 
-- Nothing manual beyond the runs — the exported table carries the numbers.
+- The exported markdown table (or just "done" — the numbers are also visible
+  in the panel).
 
 **What happens next**
 
 - FINDINGS benchmark tables go from PENDING to measured; the settled
   recipients-per-transaction number gets chosen with margin and written into
-  the README.
+  the README. If this step is skipped, the README's benchmark section stays
+  honestly marked PENDING — the submission gate does not require it.
 
 ---
 
